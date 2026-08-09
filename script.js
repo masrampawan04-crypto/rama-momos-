@@ -2,11 +2,7 @@
 
 /* =====================================================
    RAMA MOMO'S — COMPLETE ORDER SYSTEM
-===================================================== */
-
-/* =====================================================
-   SETTINGS
-===================================================== */
+   ===================================================== */
 
 const SELLER_WHATSAPP = "919359874910";
 const DELIVERY_CHARGE = 15;
@@ -15,199 +11,111 @@ const STORAGE_CART = "rama_momos_cart";
 const STORAGE_ORDERS = "rama_momos_orders";
 const STORAGE_DARK = "rama_momos_dark";
 
-
-/* =====================================================
-   GLOBAL DATA
-===================================================== */
-
 let cart = [];
 let orders = [];
 let appliedCoupon = false;
 let customerLocation = null;
 
-
 /* =====================================================
-   SAFE STORAGE
+   STORAGE
 ===================================================== */
 
 function loadData() {
-
     try {
-
-        const savedCart =
-            localStorage.getItem(STORAGE_CART);
-
-        const savedOrders =
-            localStorage.getItem(STORAGE_ORDERS);
-
-        const savedDark =
-            localStorage.getItem(STORAGE_DARK);
-
+        const savedCart = localStorage.getItem(STORAGE_CART);
+        const savedOrders = localStorage.getItem(STORAGE_ORDERS);
+        const savedDark = localStorage.getItem(STORAGE_DARK);
 
         if (savedCart) {
-
-            const parsedCart =
-                JSON.parse(savedCart);
-
+            const parsedCart = JSON.parse(savedCart);
             if (Array.isArray(parsedCart)) {
                 cart = parsedCart;
             }
-
         }
 
-
         if (savedOrders) {
-
-            const parsedOrders =
-                JSON.parse(savedOrders);
-
+            const parsedOrders = JSON.parse(savedOrders);
             if (Array.isArray(parsedOrders)) {
                 orders = parsedOrders;
             }
-
         }
-
 
         if (savedDark === "true") {
-
             document.body.classList.add("dark");
-
         }
-
     } catch (error) {
-
-        console.error(
-            "Storage loading error:",
-            error
-        );
-
+        console.error("Storage loading error:", error);
         cart = [];
         orders = [];
-
     }
-
 }
 
-
-/* =====================================================
-   SAVE CART
-===================================================== */
-
 function saveCart() {
-
     try {
-
         localStorage.setItem(
             STORAGE_CART,
             JSON.stringify(cart)
         );
-
     } catch (error) {
-
-        console.error(
-            "Cart save error:",
-            error
-        );
-
+        console.error("Cart save error:", error);
     }
-
 }
 
-
-/* =====================================================
-   SAVE ORDERS
-===================================================== */
-
 function saveOrders() {
-
     try {
-
         localStorage.setItem(
             STORAGE_ORDERS,
             JSON.stringify(orders)
         );
-
     } catch (error) {
-
-        console.error(
-            "Orders save error:",
-            error
-        );
-
+        console.error("Orders save error:", error);
     }
-
 }
 
-
 /* =====================================================
-   ESCAPE HTML
+   HELPERS
 ===================================================== */
 
 function escapeHTML(value) {
-
-    return String(value || "")
+    return String(value == null ? "" : value)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
-
 }
 
-
-/* =====================================================
-   TOAST
-===================================================== */
-
 function showToast(message) {
-
     const container =
-        document.getElementById(
-            "toast-container"
-        );
+        document.getElementById("toast-container");
 
     if (!container) {
-
         alert(message);
-
         return;
-
     }
-
 
     const toast =
         document.createElement("div");
 
     toast.className = "toast";
-
     toast.textContent = message;
 
     container.appendChild(toast);
 
-
     setTimeout(function () {
-
         toast.classList.add("show");
-
     }, 20);
 
-
     setTimeout(function () {
-
         toast.classList.remove("show");
 
         setTimeout(function () {
-
             if (toast.parentNode) {
                 toast.remove();
             }
-
         }, 350);
-
     }, 2500);
-
 }
-
 
 /* =====================================================
    MOBILE MENU
@@ -219,42 +127,25 @@ const menuBtn =
 const navMenu =
     document.getElementById("navMenu");
 
-
 if (menuBtn && navMenu) {
-
-    menuBtn.addEventListener(
-        "click",
-        function () {
-
-            navMenu.classList.toggle("show");
-
-        }
-    );
-
+    menuBtn.addEventListener("click", function () {
+        navMenu.classList.toggle("show");
+    });
 }
-
 
 document
     .querySelectorAll(".nav-menu a")
     .forEach(function (link) {
 
-        link.addEventListener(
-            "click",
-            function () {
+        link.addEventListener("click", function () {
 
-                if (navMenu) {
-
-                    navMenu.classList.remove(
-                        "show"
-                    );
-
-                }
-
+            if (navMenu) {
+                navMenu.classList.remove("show");
             }
-        );
+
+        });
 
     });
-
 
 /* =====================================================
    DARK MODE
@@ -263,258 +154,186 @@ document
 const darkBtn =
     document.getElementById("darkBtn");
 
-
 if (darkBtn) {
 
-    darkBtn.addEventListener(
-        "click",
-        function () {
+    darkBtn.addEventListener("click", function () {
 
-            document.body.classList.toggle(
-                "dark"
-            );
+        document.body.classList.toggle("dark");
 
+        const enabled =
+            document.body.classList.contains("dark");
 
-            const enabled =
-                document.body.classList.contains(
-                    "dark"
-                );
-
+        try {
 
             localStorage.setItem(
                 STORAGE_DARK,
                 enabled ? "true" : "false"
             );
 
+        } catch (error) {
 
-            showToast(
-                enabled
-                    ? "Dark mode enabled 🌙"
-                    : "Light mode enabled ☀️"
+            console.error(
+                "Dark mode save error:",
+                error
             );
 
         }
-    );
+
+        showToast(
+            enabled
+                ? "Dark mode enabled 🌙"
+                : "Light mode enabled ☀️"
+        );
+
+    });
 
 }
-
 
 /* =====================================================
    MENU FILTER
 ===================================================== */
 
 const filterButtons =
-    document.querySelectorAll(
-        ".filter-btn"
-    );
+    document.querySelectorAll(".filter-btn");
 
 const foodCards =
-    document.querySelectorAll(
-        ".food-card"
-    );
+    document.querySelectorAll(".food-card");
 
+filterButtons.forEach(function (button) {
 
-filterButtons.forEach(
-    function (button) {
+    button.addEventListener("click", function () {
 
-        button.addEventListener(
-            "click",
-            function () {
+        filterButtons.forEach(function (btn) {
 
-                filterButtons.forEach(
-                    function (btn) {
+            btn.classList.remove("active");
 
-                        btn.classList.remove(
-                            "active"
-                        );
+        });
 
-                    }
-                );
+        button.classList.add("active");
 
+        const category =
+            button.getAttribute("data-category");
 
-                button.classList.add(
-                    "active"
-                );
+        foodCards.forEach(function (card) {
 
+            const cardCategory =
+                card.getAttribute("data-category");
 
-                const category =
-                    button.getAttribute(
-                        "data-category"
-                    );
+            if (
+                category === "all" ||
+                category === cardCategory
+            ) {
 
+                card.style.display = "";
 
-                foodCards.forEach(
-                    function (card) {
+            } else {
 
-                        const cardCategory =
-                            card.getAttribute(
-                                "data-category"
-                            );
-
-
-                        if (
-                            category === "all" ||
-                            category === cardCategory
-                        ) {
-
-                            card.style.display =
-                                "";
-
-                        } else {
-
-                            card.style.display =
-                                "none";
-
-                        }
-
-                    }
-                );
+                card.style.display = "none";
 
             }
-        );
 
-    }
-);
+        });
 
+    });
+
+});
 
 /* =====================================================
    QUANTITY BUTTONS
 ===================================================== */
 
-document.addEventListener(
-    "click",
-    function (event) {
+document.addEventListener("click", function (event) {
 
-        const plus =
-            event.target.closest(
-                ".qty-plus"
-            );
+    const plus =
+        event.target.closest(".qty-plus");
 
-        const minus =
-            event.target.closest(
-                ".qty-minus"
-            );
+    const minus =
+        event.target.closest(".qty-minus");
 
-
-        if (!plus && !minus) {
-            return;
-        }
-
-
-        const card =
-            event.target.closest(
-                ".food-card"
-            );
-
-
-        if (!card) {
-            return;
-        }
-
-
-        const input =
-            card.querySelector(
-                ".qty-input"
-            );
-
-
-        if (!input) {
-            return;
-        }
-
-
-        let value =
-            parseInt(input.value, 10);
-
-
-        if (isNaN(value)) {
-            value = 1;
-        }
-
-
-        if (plus) {
-            value++;
-        }
-
-
-        if (minus) {
-            value--;
-        }
-
-
-        if (value < 1) {
-            value = 1;
-        }
-
-
-        if (value > 20) {
-            value = 20;
-        }
-
-
-        input.value = value;
-
+    if (!plus && !minus) {
+        return;
     }
-);
 
+    const card =
+        event.target.closest(".food-card");
+
+    if (!card) {
+        return;
+    }
+
+    const input =
+        card.querySelector(".qty-input");
+
+    if (!input) {
+        return;
+    }
+
+    let value =
+        parseInt(input.value, 10);
+
+    if (isNaN(value)) {
+        value = 1;
+    }
+
+    if (plus) {
+        value++;
+    }
+
+    if (minus) {
+        value--;
+    }
+
+    if (value < 1) {
+        value = 1;
+    }
+
+    if (value > 20) {
+        value = 20;
+    }
+
+    input.value = value;
+
+});
+
+document.addEventListener("change", function (event) {
+
+    if (
+        !event.target.classList.contains(
+            "qty-input"
+        )
+    ) {
+        return;
+    }
+
+    let value =
+        parseInt(
+            event.target.value,
+            10
+        );
+
+    if (isNaN(value)) {
+        value = 1;
+    }
+
+    if (value < 1) {
+        value = 1;
+    }
+
+    if (value > 20) {
+        value = 20;
+    }
+
+    event.target.value = value;
+
+});
 
 /* =====================================================
-   QUANTITY INPUT
+   FAVOURITE BUTTONS
 ===================================================== */
 
-document.addEventListener(
-    "change",
-    function (event) {
-
-        if (
-            !event.target.classList.contains(
-                "qty-input"
-            )
-        ) {
-            return;
-        }
-
-
-        let value =
-            parseInt(
-                event.target.value,
-                10
-            );
-
-
-        if (isNaN(value)) {
-            value = 1;
-        }
-
-
-        if (value < 1) {
-            value = 1;
-        }
-
-
-        if (value > 20) {
-            value = 20;
-        }
-
-
-        event.target.value = value;
-
-    }
-);
-
-
-/* =====================================================
-   FAVOURITE BUTTON
-===================================================== */
-
-const favButtons =
-    document.querySelectorAll(
-        ".fav-btn"
-    );
-
-
-favButtons.forEach(
-    function (button) {
+document
+    .querySelectorAll(".fav-btn")
+    .forEach(function (button) {
 
         button.addEventListener(
             "click",
@@ -523,7 +342,6 @@ favButtons.forEach(
                 button.classList.toggle(
                     "active"
                 );
-
 
                 if (
                     button.classList.contains(
@@ -550,22 +368,15 @@ favButtons.forEach(
             }
         );
 
-    }
-);
-
+    });
 
 /* =====================================================
    ADD TO CART
 ===================================================== */
 
-const addButtons =
-    document.querySelectorAll(
-        ".add-cart"
-    );
-
-
-addButtons.forEach(
-    function (button) {
+document
+    .querySelectorAll(".add-cart")
+    .forEach(function (button) {
 
         button.addEventListener(
             "click",
@@ -576,29 +387,24 @@ addButtons.forEach(
                         ".food-card"
                     );
 
-
                 if (!card) {
                     return;
                 }
-
 
                 const nameElement =
                     card.querySelector(
                         ".food-name"
                     );
 
-
                 const priceElement =
                     card.querySelector(
                         ".food-price"
                     );
 
-
                 const quantityInput =
                     card.querySelector(
                         ".qty-input"
                     );
-
 
                 if (
                     !nameElement ||
@@ -610,29 +416,17 @@ addButtons.forEach(
                     );
 
                     return;
-
                 }
 
-
                 const name =
-                    nameElement.textContent
-                        .trim();
-
-
-                const priceText =
-                    priceElement.textContent
-                        .trim();
-
+                    nameElement.textContent.trim();
 
                 const price =
                     parseInt(
-                        priceText.replace(
-                            /[^\d]/g,
-                            ""
-                        ),
+                        priceElement.textContent
+                            .replace(/[^\d]/g, ""),
                         10
                     );
-
 
                 if (
                     isNaN(price) ||
@@ -644,9 +438,7 @@ addButtons.forEach(
                     );
 
                     return;
-
                 }
-
 
                 let quantity =
                     quantityInput
@@ -656,23 +448,16 @@ addButtons.forEach(
                         )
                         : 1;
 
-
                 if (
                     isNaN(quantity) ||
                     quantity < 1
                 ) {
-
                     quantity = 1;
-
                 }
-
 
                 if (quantity > 20) {
-
                     quantity = 20;
-
                 }
-
 
                 const existing =
                     cart.find(
@@ -685,13 +470,18 @@ addButtons.forEach(
                         }
                     );
 
-
                 if (existing) {
 
                     existing.quantity =
                         Number(
-                            existing.quantity
+                            existing.quantity || 0
                         ) + quantity;
+
+                    if (
+                        existing.quantity > 20
+                    ) {
+                        existing.quantity = 20;
+                    }
 
                 } else {
 
@@ -707,7 +497,6 @@ addButtons.forEach(
 
                 }
 
-
                 saveCart();
 
                 renderCart();
@@ -716,7 +505,6 @@ addButtons.forEach(
 
                 updateTotals();
 
-
                 showToast(
                     name +
                     " × " +
@@ -724,11 +512,9 @@ addButtons.forEach(
                     " added to cart 🛒"
                 );
 
-
                 button.classList.add(
                     "added"
                 );
-
 
                 setTimeout(
                     function () {
@@ -744,9 +530,7 @@ addButtons.forEach(
             }
         );
 
-    }
-);
-
+    });
 
 /* =====================================================
    CART COUNT
@@ -759,14 +543,11 @@ function updateCartCount() {
             "cart-count"
         );
 
-
     if (!count) {
         return;
     }
 
-
     let totalQuantity = 0;
-
 
     if (Array.isArray(cart)) {
 
@@ -777,7 +558,6 @@ function updateCartCount() {
                     Number(
                         item.quantity
                     );
-
 
                 if (!isNaN(quantity)) {
 
@@ -791,17 +571,14 @@ function updateCartCount() {
 
     }
 
-
     count.textContent =
         totalQuantity;
-
 
     if (totalQuantity > 0) {
 
         count.classList.add(
             "cart-bounce"
         );
-
 
         setTimeout(
             function () {
@@ -818,7 +595,6 @@ function updateCartCount() {
 
 }
 
-
 /* =====================================================
    CALCULATE TOTALS
 ===================================================== */
@@ -826,7 +602,6 @@ function updateCartCount() {
 function calculateTotals() {
 
     let subtotal = 0;
-
 
     if (Array.isArray(cart)) {
 
@@ -839,7 +614,6 @@ function calculateTotals() {
                 const quantity =
                     Number(item.quantity) || 0;
 
-
                 subtotal +=
                     price * quantity;
 
@@ -848,9 +622,7 @@ function calculateTotals() {
 
     }
 
-
     let discount = 0;
-
 
     if (
         appliedCoupon &&
@@ -864,18 +636,15 @@ function calculateTotals() {
 
     }
 
-
     const delivery =
         subtotal > 0
             ? DELIVERY_CHARGE
             : 0;
 
-
     const total =
         subtotal -
         discount +
         delivery;
-
 
     return {
 
@@ -891,7 +660,6 @@ function calculateTotals() {
 
 }
 
-
 /* =====================================================
    UPDATE TOTALS
 ===================================================== */
@@ -901,30 +669,25 @@ function updateTotals() {
     const totals =
         calculateTotals();
 
-
     const subtotalElement =
         document.getElementById(
             "subtotal"
         );
-
 
     const deliveryElement =
         document.getElementById(
             "delivery"
         );
 
-
     const discountElement =
         document.getElementById(
             "discount"
         );
 
-
     const grandTotalElement =
         document.getElementById(
             "grandTotal"
         );
-
 
     if (subtotalElement) {
 
@@ -934,7 +697,6 @@ function updateTotals() {
 
     }
 
-
     if (deliveryElement) {
 
         deliveryElement.textContent =
@@ -943,7 +705,6 @@ function updateTotals() {
 
     }
 
-
     if (discountElement) {
 
         discountElement.textContent =
@@ -951,7 +712,6 @@ function updateTotals() {
             totals.discount;
 
     }
-
 
     if (grandTotalElement) {
 
@@ -962,7 +722,6 @@ function updateTotals() {
     }
 
 }
-
 
 /* =====================================================
    RENDER CART
@@ -975,11 +734,9 @@ function renderCart() {
             "cartItems"
         );
 
-
     if (!cartItems) {
         return;
     }
-
 
     if (
         !Array.isArray(cart) ||
@@ -991,18 +748,13 @@ function renderCart() {
             '🛒 Your cart is empty' +
             '</div>';
 
-
         updateTotals();
-
         updateCartCount();
 
         return;
-
     }
 
-
     cartItems.innerHTML = "";
-
 
     cart.forEach(
         function (item, index) {
@@ -1010,52 +762,42 @@ function renderCart() {
             const price =
                 Number(item.price) || 0;
 
-
             const quantity =
                 Number(item.quantity) || 0;
 
-
             const itemTotal =
                 price * quantity;
-
 
             const cartItem =
                 document.createElement(
                     "div"
                 );
 
-
             cartItem.className =
                 "cart-item";
-
 
             const left =
                 document.createElement(
                     "div"
                 );
 
-
             const right =
                 document.createElement(
                     "div"
                 );
-
 
             const name =
                 document.createElement(
                     "strong"
                 );
 
-
             name.textContent =
                 item.name || "Item";
-
 
             const details =
                 document.createElement(
                     "p"
                 );
-
 
             details.textContent =
                 "₹" +
@@ -1063,35 +805,28 @@ function renderCart() {
                 " × " +
                 quantity;
 
-
             const total =
                 document.createElement(
                     "strong"
                 );
 
-
             total.textContent =
                 "₹" +
                 itemTotal;
-
 
             const removeButton =
                 document.createElement(
                     "button"
                 );
 
-
             removeButton.type =
                 "button";
-
 
             removeButton.className =
                 "remove-cart";
 
-
             removeButton.textContent =
                 "Remove";
-
 
             removeButton.addEventListener(
                 "click",
@@ -1102,7 +837,6 @@ function renderCart() {
                         1
                     );
 
-
                     saveCart();
 
                     renderCart();
@@ -1111,7 +845,6 @@ function renderCart() {
 
                     updateTotals();
 
-
                     showToast(
                         "Item removed 🗑️"
                     );
@@ -1119,11 +852,8 @@ function renderCart() {
                 }
             );
 
-
             left.appendChild(name);
-
             left.appendChild(details);
-
 
             right.appendChild(total);
 
@@ -1131,11 +861,8 @@ function renderCart() {
                 removeButton
             );
 
-
             cartItem.appendChild(left);
-
             cartItem.appendChild(right);
-
 
             cartItems.appendChild(
                 cartItem
@@ -1144,13 +871,10 @@ function renderCart() {
         }
     );
 
-
     updateTotals();
-
     updateCartCount();
 
 }
-
 
 /* =====================================================
    COUPON
@@ -1160,7 +884,6 @@ const couponBtn =
     document.getElementById(
         "couponBtn"
     );
-
 
 if (couponBtn) {
 
@@ -1173,17 +896,14 @@ if (couponBtn) {
                     "coupon"
                 );
 
-
             if (!coupon) {
                 return;
             }
-
 
             const code =
                 coupon.value
                     .trim()
                     .toUpperCase();
-
 
             if (
                 !Array.isArray(cart) ||
@@ -1195,16 +915,13 @@ if (couponBtn) {
                 );
 
                 return;
-
             }
-
 
             if (code === "RAMA10") {
 
                 appliedCoupon = true;
 
                 updateTotals();
-
 
                 showToast(
                     "10% discount applied 🎉"
@@ -1215,7 +932,6 @@ if (couponBtn) {
                 appliedCoupon = false;
 
                 updateTotals();
-
 
                 showToast(
                     "Invalid coupon code ❌"
@@ -1228,7 +944,6 @@ if (couponBtn) {
 
 }
 
-
 /* =====================================================
    CUSTOMER DETAILS
 ===================================================== */
@@ -1240,24 +955,20 @@ function getCustomerDetails() {
             "customerName"
         );
 
-
     const phone =
         document.getElementById(
             "customerPhone"
         );
-
 
     const address =
         document.getElementById(
             "customerAddress"
         );
 
-
     const landmark =
         document.getElementById(
             "customerLandmark"
         );
-
 
     return {
 
@@ -1266,18 +977,15 @@ function getCustomerDetails() {
                 ? name.value.trim()
                 : "",
 
-
         phone:
             phone
                 ? phone.value.trim()
                 : "",
 
-
         address:
             address
                 ? address.value.trim()
                 : "",
-
 
         landmark:
             landmark
@@ -1288,30 +996,24 @@ function getCustomerDetails() {
 
 }
 
-
 /* =====================================================
    LOCATION
 ===================================================== */
 
 function getCustomerLocation() {
 
-    if (
-        !navigator.geolocation
-    ) {
+    if (!navigator.geolocation) {
 
         showToast(
             "Location is not supported ❌"
         );
 
         return;
-
     }
-
 
     showToast(
         "Requesting location permission 📍"
     );
-
 
     navigator.geolocation.getCurrentPosition(
 
@@ -1327,36 +1029,30 @@ function getCustomerLocation() {
 
             };
 
-
             const latitude =
                 document.getElementById(
                     "customerLatitude"
                 );
-
 
             const longitude =
                 document.getElementById(
                     "customerLongitude"
                 );
 
-
             const mapLatitude =
                 document.getElementById(
                     "mapLatitude"
                 );
-
 
             const mapLongitude =
                 document.getElementById(
                     "mapLongitude"
                 );
 
-
             const status =
                 document.getElementById(
                     "locationStatus"
                 );
-
 
             if (latitude) {
 
@@ -1365,14 +1061,12 @@ function getCustomerLocation() {
 
             }
 
-
             if (longitude) {
 
                 longitude.value =
                     position.coords.longitude;
 
             }
-
 
             if (mapLatitude) {
 
@@ -1381,14 +1075,12 @@ function getCustomerLocation() {
 
             }
 
-
             if (mapLongitude) {
 
                 mapLongitude.textContent =
                     position.coords.longitude;
 
             }
-
 
             if (status) {
 
@@ -1397,13 +1089,11 @@ function getCustomerLocation() {
 
             }
 
-
             showToast(
                 "Location captured successfully 📍"
             );
 
         },
-
 
         function (error) {
 
@@ -1412,13 +1102,11 @@ function getCustomerLocation() {
                 error
             );
 
-
             showToast(
                 "Location permission denied ❌"
             );
 
         },
-
 
         {
 
@@ -1434,7 +1122,6 @@ function getCustomerLocation() {
 
 }
 
-
 /* =====================================================
    LOCATION BUTTONS
 ===================================================== */
@@ -1444,12 +1131,10 @@ const locationBtn =
         "locationBtn"
     );
 
-
 const mapLocationBtn =
     document.getElementById(
         "mapLocationBtn"
     );
-
 
 if (locationBtn) {
 
@@ -1460,7 +1145,6 @@ if (locationBtn) {
 
 }
 
-
 if (mapLocationBtn) {
 
     mapLocationBtn.addEventListener(
@@ -1469,7 +1153,6 @@ if (mapLocationBtn) {
     );
 
 }
-
 
 /* =====================================================
    ORDER ID
@@ -1482,13 +1165,11 @@ function createOrderID() {
             .toString()
             .slice(-6);
 
-
     const random =
         Math.floor(
             100 +
             Math.random() * 900
         );
-
 
     return (
         "RAMA-" +
@@ -1498,7 +1179,6 @@ function createOrderID() {
     );
 
 }
-
 
 /* =====================================================
    PLACE ORDER
@@ -1516,13 +1196,10 @@ function placeOrder() {
         );
 
         return;
-
     }
-
 
     const customer =
         getCustomerDetails();
-
 
     if (!customer.name) {
 
@@ -1531,9 +1208,7 @@ function placeOrder() {
         );
 
         return;
-
     }
-
 
     if (!customer.phone) {
 
@@ -1542,9 +1217,7 @@ function placeOrder() {
         );
 
         return;
-
     }
-
 
     if (
         !/^[0-9]{10}$/.test(
@@ -1553,13 +1226,11 @@ function placeOrder() {
     ) {
 
         showToast(
-            "Enter valid 10 digit mobile number"
+            "Please enter valid 10 digit mobile number"
         );
 
         return;
-
     }
-
 
     if (!customer.address) {
 
@@ -1568,93 +1239,105 @@ function placeOrder() {
         );
 
         return;
-
     }
-
 
     const totals =
         calculateTotals();
-
 
     const order = {
 
         id:
             createOrderID(),
 
+        customer: {
 
-        customer:
-            customer,
+            name:
+                customer.name,
 
+            phone:
+                customer.phone,
+
+            address:
+                customer.address,
+
+            landmark:
+                customer.landmark
+
+        },
 
         items:
-            JSON.parse(
-                JSON.stringify(cart)
-            ),
+            cart.map(
+                function (item) {
 
+                    return {
+
+                        name:
+                            item.name,
+
+                        price:
+                            Number(
+                                item.price
+                            ) || 0,
+
+                        quantity:
+                            Number(
+                                item.quantity
+                            ) || 1
+
+                    };
+
+                }
+            ),
 
         subtotal:
             totals.subtotal,
 
-
         delivery:
             totals.delivery,
-
 
         discount:
             totals.discount,
 
-
         total:
             totals.total,
-
 
         location:
             customerLocation,
 
-
         status:
             "New Order",
 
-
         createdAt:
-            new Date().toLocaleString(
-                "en-IN"
-            )
+            new Date()
+                .toLocaleString(
+                    "en-IN"
+                )
 
     };
 
-
     orders.unshift(order);
-
 
     saveOrders();
 
-
-    renderCustomerOrders();
-
-    renderSellerOrders();
-
-
-    sendOrderToWhatsApp(
-        order
-    );
-
+    sendOrderToWhatsApp(order);
 
     cart = [];
 
     appliedCoupon = false;
 
-
     saveCart();
-
 
     renderCart();
 
+    updateCartCount();
+
+    renderCustomerOrders();
+
+    renderSellerOrders();
 
     showToast(
-        "Order placed successfully 🎉"
+        "Order sent to WhatsApp successfully 🎉"
     );
-
 
     setTimeout(
         function () {
@@ -1664,11 +1347,10 @@ function placeOrder() {
             );
 
         },
-        400
+        500
     );
 
 }
-
 
 /* =====================================================
    WHATSAPP ORDER
@@ -1676,96 +1358,115 @@ function placeOrder() {
 
 function sendOrderToWhatsApp(order) {
 
-    let message =
-        "🥟 RAMA MOMO'S NEW ORDER\n\n";
-
+    let message = "";
 
     message +=
-        "Order ID: " +
+        "🥟 *RAMA MOMO'S NEW ORDER* 🥟\n";
+
+    message +=
+        "━━━━━━━━━━━━━━━━━━\n\n";
+
+    message +=
+        "🆔 Order ID: " +
         order.id +
         "\n";
 
-
     message +=
-        "Customer: " +
+        "👤 Customer: " +
         order.customer.name +
         "\n";
 
-
     message +=
-        "Phone: " +
+        "📱 Phone: " +
         order.customer.phone +
         "\n";
 
-
     message +=
-        "Address: " +
+        "🏠 Address: " +
         order.customer.address +
         "\n";
-
 
     if (
         order.customer.landmark
     ) {
 
         message +=
-            "Landmark: " +
+            "📍 Landmark: " +
             order.customer.landmark +
             "\n";
 
     }
 
+    message += "\n";
 
     message +=
-        "\n🛒 ORDER ITEMS\n\n";
+        "🛒 *ORDER ITEMS*\n";
 
+    message +=
+        "━━━━━━━━━━━━━━━━━━\n";
 
     order.items.forEach(
         function (item, index) {
 
-            const itemTotal =
-                Number(item.price) *
-                Number(item.quantity);
+            const price =
+                Number(item.price) || 0;
 
+            const quantity =
+                Number(item.quantity) || 1;
+
+            const itemTotal =
+                price * quantity;
 
             message +=
                 (index + 1) +
                 ". " +
                 item.name +
+                "\n";
+
+            message +=
+                "   Quantity: " +
+                quantity +
+                "\n";
+
+            message +=
+                "   Price: ₹" +
+                price +
                 " × " +
-                item.quantity +
+                quantity +
                 " = ₹" +
                 itemTotal +
-                "\n";
+                "\n\n";
 
         }
     );
 
+    message +=
+        "━━━━━━━━━━━━━━━━━━\n";
 
     message +=
-        "\nSubtotal: ₹" +
-        order.subtotal;
-
-
-    message +=
-        "\nDelivery: ₹" +
-        order.delivery;
-
+        "Subtotal: ₹" +
+        order.subtotal +
+        "\n";
 
     message +=
-        "\nDiscount: ₹" +
-        order.discount;
-
+        "Delivery: ₹" +
+        order.delivery +
+        "\n";
 
     message +=
-        "\nTOTAL: ₹" +
-        order.total;
+        "Discount: ₹" +
+        order.discount +
+        "\n";
 
+    message +=
+        "💰 *TOTAL: ₹" +
+        order.total +
+        "*\n";
 
     if (
         order.location &&
-        order.location.latitude &&
-        order.location.longitude
+        order.location.latitude != null &&
+        order.location.longitude != null
     ) {
 
         const mapLink =
@@ -1774,19 +1475,24 @@ function sendOrderToWhatsApp(order) {
             "," +
             order.location.longitude;
 
+        message +=
+            "\n📍 *Customer Location:*\n";
 
         message +=
-            "\n\n📍 CUSTOMER LOCATION:\n" +
-            mapLink;
+            mapLink +
+            "\n";
 
     }
 
+    message +=
+        "\n🕐 Order Time: " +
+        order.createdAt +
+        "\n";
 
     message +=
-        "\n\nPlease confirm this order.";
+        "\n✅ Please confirm this order.";
 
-
-    const url =
+    const whatsappURL =
         "https://wa.me/" +
         SELLER_WHATSAPP +
         "?text=" +
@@ -1794,14 +1500,12 @@ function sendOrderToWhatsApp(order) {
             message
         );
 
-
     window.open(
-        url,
+        whatsappURL,
         "_blank"
     );
 
 }
-
 
 /* =====================================================
    ORDER CONFIRMATION
@@ -1814,20 +1518,16 @@ function showOrderConfirmation(order) {
             "div"
         );
 
-
     box.className =
         "order-modal";
-
 
     const modalBox =
         document.createElement(
             "div"
         );
 
-
     modalBox.className =
         "order-modal-box";
-
 
     modalBox.innerHTML =
         '<div class="success-icon">✓</div>' +
@@ -1836,37 +1536,33 @@ function showOrderConfirmation(order) {
 
         '<p>Your order has been received.</p>' +
 
-        '<strong>' +
+        "<strong>" +
         escapeHTML(
             order.id
         ) +
-        '</strong>' +
+        "</strong>" +
 
         '<div class="order-modal-total">' +
-        'Total: ₹' +
+        "Total: ₹" +
         (Number(order.total) || 0) +
-        '</div>' +
+        "</div>" +
 
         '<button type="button" class="main-btn close-order-modal">' +
-        'Done' +
-        '</button>';
-
+        "Done" +
+        "</button>";
 
     box.appendChild(
         modalBox
     );
 
-
     document.body.appendChild(
         box
     );
-
 
     const closeButton =
         box.querySelector(
             ".close-order-modal"
         );
-
 
     if (closeButton) {
 
@@ -1883,88 +1579,8 @@ function showOrderConfirmation(order) {
 
 }
 
-
 /* =====================================================
-   SELLER NOTIFICATION
-===================================================== */
-
-function showSellerNotification(order) {
-
-    const notification =
-        document.createElement(
-            "div"
-        );
-
-
-    notification.className =
-        "seller-notification";
-
-
-    notification.innerHTML =
-        '<div class="notification-icon">🔔</div>' +
-
-        '<div>' +
-
-        '<strong>New Order Received!</strong>' +
-
-        '<p>' +
-        escapeHTML(order.id) +
-        " • ₹" +
-        order.total +
-        '</p>' +
-
-        '</div>';
-
-
-    document.body.appendChild(
-        notification
-    );
-
-
-    setTimeout(
-        function () {
-
-            notification.classList.add(
-                "show"
-            );
-
-        },
-        50
-    );
-
-
-    setTimeout(
-        function () {
-
-            notification.classList.remove(
-                "show"
-            );
-
-
-            setTimeout(
-                function () {
-
-                    if (
-                        notification.parentNode
-                    ) {
-
-                        notification.remove();
-
-                    }
-
-                },
-                400
-            );
-
-        },
-        5000
-    );
-
-}
-
-
-/* =====================================================
-   UPDATE ORDER STATUS
+   ORDER STATUS
 ===================================================== */
 
 function updateOrderStatus(
@@ -1983,7 +1599,6 @@ function updateOrderStatus(
             }
         );
 
-
     if (!order) {
 
         showToast(
@@ -1991,21 +1606,16 @@ function updateOrderStatus(
         );
 
         return;
-
     }
-
 
     order.status =
         status;
 
-
     saveOrders();
-
 
     renderSellerOrders();
 
     renderCustomerOrders();
-
 
     showToast(
         "Order " +
@@ -2016,12 +1626,13 @@ function updateOrderStatus(
 
 }
 
-
 /* =====================================================
    CANCEL ORDER
 ===================================================== */
 
-function cancelOrder(orderID) {
+function cancelOrder(
+    orderID
+) {
 
     const order =
         orders.find(
@@ -2034,7 +1645,6 @@ function cancelOrder(orderID) {
             }
         );
 
-
     if (!order) {
 
         showToast(
@@ -2042,12 +1652,11 @@ function cancelOrder(orderID) {
         );
 
         return;
-
     }
 
-
     if (
-        order.status === "Delivered"
+        order.status ===
+        "Delivered"
     ) {
 
         showToast(
@@ -2055,12 +1664,11 @@ function cancelOrder(orderID) {
         );
 
         return;
-
     }
 
-
     if (
-        order.status === "Cancelled"
+        order.status ===
+        "Cancelled"
     ) {
 
         showToast(
@@ -2068,9 +1676,7 @@ function cancelOrder(orderID) {
         );
 
         return;
-
     }
-
 
     const confirmed =
         window.confirm(
@@ -2079,30 +1685,24 @@ function cancelOrder(orderID) {
             "?"
         );
 
-
     if (!confirmed) {
         return;
     }
 
-
     order.status =
         "Cancelled";
 
-
     saveOrders();
-
 
     renderSellerOrders();
 
     renderCustomerOrders();
-
 
     showToast(
         "Order cancelled ❌"
     );
 
 }
-
 
 /* =====================================================
    CUSTOMER ORDERS
@@ -2115,11 +1715,9 @@ function renderCustomerOrders() {
             "customerOrders"
         );
 
-
     if (!container) {
         return;
     }
-
 
     if (
         !Array.isArray(orders) ||
@@ -2129,16 +1727,12 @@ function renderCustomerOrders() {
         container.innerHTML =
             '<div class="no-orders">' +
             '📦 No orders placed yet.' +
-            '</div>';
-
+            "</div>";
 
         return;
-
     }
 
-
     container.innerHTML = "";
-
 
     orders.forEach(
         function (order) {
@@ -2148,53 +1742,58 @@ function renderCustomerOrders() {
                     "div"
                 );
 
-
             card.className =
                 "customer-order-card";
 
-
             const orderId =
-                order.id || "Unknown";
-
+                order.id ||
+                "Unknown";
 
             const status =
                 order.status ||
                 "New Order";
 
-
             const createdAt =
-                order.createdAt || "";
-
+                order.createdAt ||
+                "";
 
             const total =
-                Number(order.total) || 0;
-
+                Number(
+                    order.total
+                ) || 0;
 
             card.innerHTML =
                 '<div class="customer-order-top">' +
 
-                '<strong>' +
-                escapeHTML(orderId) +
-                '</strong>' +
+                "<strong>" +
+                escapeHTML(
+                    orderId
+                ) +
+                "</strong>" +
 
-                '<span>' +
-                escapeHTML(status) +
-                '</span>' +
+                "<span>" +
+                escapeHTML(
+                    status
+                ) +
+                "</span>" +
 
-                '</div>' +
+                "</div>" +
 
-                '<p>🕐 ' +
-                escapeHTML(createdAt) +
-                '</p>' +
+                "<p>🕐 " +
+                escapeHTML(
+                    createdAt
+                ) +
+                "</p>" +
 
-                '<p>💰 Total: ₹' +
+                "<p>💰 Total: ₹" +
                 total +
-                '</p>';
-
+                "</p>";
 
             if (
-                status !== "Delivered" &&
-                status !== "Cancelled"
+                status !==
+                    "Delivered" &&
+                status !==
+                    "Cancelled"
             ) {
 
                 const cancelButton =
@@ -2202,18 +1801,14 @@ function renderCustomerOrders() {
                         "button"
                     );
 
-
                 cancelButton.type =
                     "button";
-
 
                 cancelButton.className =
                     "cancel-order-btn";
 
-
                 cancelButton.textContent =
                     "❌ Cancel Order";
-
 
                 cancelButton.addEventListener(
                     "click",
@@ -2226,13 +1821,11 @@ function renderCustomerOrders() {
                     }
                 );
 
-
                 card.appendChild(
                     cancelButton
                 );
 
             }
-
 
             container.appendChild(
                 card
@@ -2242,7 +1835,6 @@ function renderCustomerOrders() {
     );
 
 }
-
 
 /* =====================================================
    SELLER ORDERS
@@ -2255,18 +1847,15 @@ function renderSellerOrders() {
             "sellerOrders"
         );
 
-
     const count =
         document.getElementById(
             "sellerOrderCount"
         );
 
-
     const totalOrders =
         Array.isArray(orders)
             ? orders.length
             : 0;
-
 
     if (count) {
 
@@ -2280,11 +1869,9 @@ function renderSellerOrders() {
 
     }
 
-
     if (!container) {
         return;
     }
-
 
     if (
         !Array.isArray(orders) ||
@@ -2294,16 +1881,12 @@ function renderSellerOrders() {
         container.innerHTML =
             '<div class="no-orders">' +
             '🔔 No new orders.' +
-            '</div>';
-
+            "</div>";
 
         return;
-
     }
 
-
     container.innerHTML = "";
-
 
     orders.forEach(
         function (order) {
@@ -2313,49 +1896,48 @@ function renderSellerOrders() {
                     "div"
                 );
 
-
             card.className =
                 "seller-order-card";
 
-
             const customer =
-                order.customer || {};
-
+                order.customer ||
+                {};
 
             const customerName =
                 customer.name ||
                 "Customer";
 
-
             const customerPhone =
                 customer.phone ||
                 "Not provided";
-
 
             const customerAddress =
                 customer.address ||
                 "Not provided";
 
+            const landmark =
+                customer.landmark ||
+                "";
 
             const orderId =
                 order.id ||
                 "Unknown";
 
-
             const status =
                 order.status ||
                 "New Order";
 
-
             const total =
-                Number(order.total) || 0;
-
+                Number(
+                    order.total
+                ) || 0;
 
             let itemsHTML = "";
 
-
             if (
-                Array.isArray(order.items) &&
+                Array.isArray(
+                    order.items
+                ) &&
                 order.items.length > 0
             ) {
 
@@ -2366,39 +1948,29 @@ function renderSellerOrders() {
                             item.name ||
                             "Item";
 
-
                         const itemPrice =
                             Number(
                                 item.price
                             ) || 0;
-
 
                         const itemQuantity =
                             Number(
                                 item.quantity
                             ) || 1;
 
-
                         const itemTotal =
                             itemPrice *
                             itemQuantity;
 
-
                         itemsHTML +=
-                            '<p>' +
-
+                            "<p>" +
                             escapeHTML(
                                 itemName
                             ) +
-
                             " × " +
-
                             itemQuantity +
-
                             " — ₹" +
-
                             itemTotal +
-
                             "</p>";
 
                     }
@@ -2407,65 +1979,94 @@ function renderSellerOrders() {
             } else {
 
                 itemsHTML =
-                    "<p>No item information available.</p>";
+                    "<p>" +
+                    "No item information available." +
+                    "</p>";
 
             }
-
 
             card.innerHTML =
                 '<div class="seller-order-top">' +
 
-                '<strong>' +
-                escapeHTML(orderId) +
-                '</strong>' +
+                "<strong>" +
+                escapeHTML(
+                    orderId
+                ) +
+                "</strong>" +
 
-                '<span>' +
-                escapeHTML(status) +
-                '</span>' +
+                "<span>" +
+                escapeHTML(
+                    status
+                ) +
+                "</span>" +
 
-                '</div>' +
+                "</div>" +
 
-                '<h3>👤 ' +
-                escapeHTML(customerName) +
-                '</h3>' +
+                "<h3>👤 " +
+                escapeHTML(
+                    customerName
+                ) +
+                "</h3>" +
 
-                '<p>📱 ' +
-                escapeHTML(customerPhone) +
-                '</p>' +
+                "<p>📱 " +
+                escapeHTML(
+                    customerPhone
+                ) +
+                "</p>" +
 
-                '<p>🏠 ' +
-                escapeHTML(customerAddress) +
-                '</p>' +
+                "<p>🏠 " +
+                escapeHTML(
+                    customerAddress
+                ) +
+                "</p>" +
+
+                (
+                    landmark
+                        ? "<p>📍 " +
+                          escapeHTML(
+                              landmark
+                          ) +
+                          "</p>"
+                        : ""
+                ) +
 
                 '<div class="seller-items">' +
                 itemsHTML +
-                '</div>' +
+                "</div>" +
 
                 '<div class="seller-total">' +
                 "Total: ₹" +
                 total +
-                '</div>' +
+                "</div>" +
 
                 '<div class="seller-actions">' +
 
-                '<button type="button" data-status="Accepted">Accept</button>' +
+                '<button type="button" data-status="Accepted">' +
+                "Accept" +
+                "</button>" +
 
-                '<button type="button" data-status="Preparing">Preparing</button>' +
+                '<button type="button" data-status="Preparing">' +
+                "Preparing" +
+                "</button>" +
 
-                '<button type="button" data-status="Out for Delivery">Out for Delivery</button>' +
+                '<button type="button" data-status="Out for Delivery">' +
+                "Out for Delivery" +
+                "</button>" +
 
-                '<button type="button" data-status="Delivered">Delivered</button>' +
+                '<button type="button" data-status="Delivered">' +
+                "Delivered" +
+                "</button>" +
 
-                '<button type="button" data-status="Cancelled">Cancel</button>' +
+                '<button type="button" data-status="Cancelled">' +
+                "Cancel" +
+                "</button>" +
 
-                '</div>';
-
+                "</div>";
 
             const actionButtons =
                 card.querySelectorAll(
                     ".seller-actions button"
                 );
-
 
             actionButtons.forEach(
                 function (button) {
@@ -2487,7 +2088,6 @@ function renderSellerOrders() {
                 }
             );
 
-
             container.appendChild(
                 card
             );
@@ -2497,7 +2097,6 @@ function renderSellerOrders() {
 
 }
 
-
 /* =====================================================
    CHECKOUT BUTTON
 ===================================================== */
@@ -2506,7 +2105,6 @@ const checkoutBtn =
     document.getElementById(
         "checkoutBtn"
     );
-
 
 if (checkoutBtn) {
 
@@ -2524,15 +2122,12 @@ if (checkoutBtn) {
                 );
 
                 return;
-
             }
-
 
             const checkout =
                 document.getElementById(
                     "checkout"
                 );
-
 
             if (checkout) {
 
@@ -2547,7 +2142,6 @@ if (checkoutBtn) {
 
 }
 
-
 /* =====================================================
    ADDRESS FORM
 ===================================================== */
@@ -2556,7 +2150,6 @@ const addressForm =
     document.getElementById(
         "addressForm"
     );
-
 
 if (addressForm) {
 
@@ -2572,7 +2165,6 @@ if (addressForm) {
     );
 
 }
-
 
 /* =====================================================
    ESCAPE KEY
@@ -2596,7 +2188,6 @@ document.addEventListener(
     }
 );
 
-
 /* =====================================================
    SCROLL ANIMATION
 ===================================================== */
@@ -2607,7 +2198,6 @@ function setupScrollAnimations() {
         document.querySelectorAll(
             ".food-card, .about-box, .contact-box, .section-heading"
         );
-
 
     if (
         !("IntersectionObserver" in window)
@@ -2624,9 +2214,7 @@ function setupScrollAnimations() {
         );
 
         return;
-
     }
-
 
     const observer =
         new IntersectionObserver(
@@ -2643,7 +2231,6 @@ function setupScrollAnimations() {
                                 "animate-in"
                             );
 
-
                             observer.unobserve(
                                 entry.target
                             );
@@ -2659,7 +2246,6 @@ function setupScrollAnimations() {
             }
         );
 
-
     elements.forEach(
         function (element) {
 
@@ -2671,7 +2257,6 @@ function setupScrollAnimations() {
     );
 
 }
-
 
 /* =====================================================
    INITIALIZATION
@@ -2690,11 +2275,6 @@ renderCustomerOrders();
 renderSellerOrders();
 
 setupScrollAnimations();
-
-
-/* =====================================================
-   FINAL
-===================================================== */
 
 console.log(
     "RAMA MOMO'S - System Loaded Successfully"
