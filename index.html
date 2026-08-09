@@ -2,45 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
+        name="description"
+        content="RAMA MOMO'S - Fresh, Hot and Homemade Momos"
     >
 
-    <title>RAMA MOMO'S</title>
+    <title>RAMA MOMO'S | Fresh Homemade Momos</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- ================= HEADER ================= -->
+    <!-- =========================================
+         HEADER
+    ========================================== -->
 
     <header class="header">
 
         <div class="header-inner">
 
-            <div class="logo">
+            <a href="#home" class="logo">
                 RAMA <span>MOMO'S</span>
-            </div>
+            </a>
 
             <button
                 id="menuBtn"
                 class="menu-btn"
                 type="button"
+                aria-label="Open Menu"
             >
                 ☰
             </button>
 
-            <nav
-                id="navMenu"
-                class="nav-menu"
-            >
-                <a href="#home">Home</a>
-                <a href="#menu">Menu</a>
-                <a href="#about">About</a>
-                <a href="#contact">Contact</a>
+            <nav id="navMenu" class="nav-menu">
+
+                <a href="#home">🏠 Home</a>
+                <a href="#menu">🥟 Menu</a>
+                <a href="#cart">🛒 Cart</a>
+                <a href="#orders">📦 Orders</a>
+                <a href="#about">❤️ About</a>
+                <a href="#contact">📞 Contact</a>
+
             </nav>
 
             <div class="header-buttons">
@@ -49,6 +54,7 @@
                     id="darkBtn"
                     type="button"
                     title="Dark Mode"
+                    aria-label="Dark Mode"
                 >
                     🌙
                 </button>
@@ -56,6 +62,7 @@
                 <a
                     href="#cart"
                     class="cart-button"
+                    aria-label="Shopping Cart"
                 >
                     🛒
                     <span id="cart-count">0</span>
@@ -68,550 +75,1029 @@
     </header>
 
 
-    <!-- ================= HOME ================= -->
+    <!-- =========================================
+         HOME
+    ========================================== -->
 
-    <section
-        id="home"
-        class="hero"
-    >
+    <main>
 
-        <div class="hero-content">
+        <section id="home" class="hero">
 
-            <p class="small-title">
-                FRESH • HOT • HOMEMADE
-            </p>
+            <div class="hero-overlay"></div>
 
-            <h1>
-                Delicious Momos<br>
-                Made With Love ❤️
-            </h1>
+            <div class="hero-content">
 
-            <p>
-                Freshly prepared momos delivered
-                hot to your doorstep.
-            </p>
+                <p class="small-title">
+                    FRESH • HOT • HOMEMADE
+                </p>
 
-            <a
-                href="#menu"
-                class="main-btn"
-            >
-                Order Now
-            </a>
+                <h1>
+                    Delicious Momos
+                    <br>
+                    Made With Love ❤️
+                </h1>
 
-        </div>
+                <p class="hero-text">
+                    Freshly prepared momos with delicious
+                    taste and homemade quality.
+                </p>
 
-    </section>
+                <div class="hero-buttons">
 
-
-    <!-- ================= MENU ================= -->
-
-    <section
-        id="menu"
-        class="menu-section"
-    >
-
-        <div class="section-heading">
-
-            <p>
-                OUR SPECIAL MENU
-            </p>
-
-            <h2>
-                Choose Your Favourite Momos
-            </h2>
-
-            <div class="heading-line"></div>
-
-        </div>
-
-
-        <!-- FILTER -->
-
-        <div class="filters">
-
-            <button
-                class="filter-btn active"
-                data-category="all"
-                type="button"
-            >
-                All
-            </button>
-
-            <button
-                class="filter-btn"
-                data-category="steam"
-                type="button"
-            >
-                Steam
-            </button>
-
-            <button
-                class="filter-btn"
-                data-category="fried"
-                type="button"
-            >
-                Fried
-            </button>
-
-            <button
-                class="filter-btn"
-                data-category="kurkure"
-                type="button"
-            >
-                Kurkure
-            </button>
-
-        </div>
-
-
-        <!-- ================= FOOD CARDS ================= -->
-
-        <div class="food-grid">
-
-
-            <!-- STEAM MOMOS -->
-
-            <div
-                class="food-card"
-                data-category="steam"
-            >
-
-                <div class="food-image">
-
-                    <!-- STEAM MOMOS IMAGE -->
-                    <!-- Yaha apni pehli photo ka link lagao -->
-
-                    <img
-                        src="images steam .jpg"
-                        alt="Steam Momos"
+                    <a
+                        href="#menu"
+                        class="main-btn"
                     >
+                        Order Now 🥟
+                    </a>
 
-                    <button
-                        class="fav-btn"
-                        type="button"
+                    <a
+                        href="#about"
+                        class="secondary-btn"
                     >
-                        ♡
-                    </button>
-
-                </div>
-
-
-                <div class="food-content">
-
-                    <h3 class="food-name">
-                        Steam Momos
-                    </h3>
-
-                    <p class="food-description">
-                        Soft and juicy steamed momos
-                        served with spicy chutney.
-                    </p>
-
-                    <div class="food-bottom">
-
-                        <strong class="food-price">
-                            ₹40
-                        </strong>
-
-                        <div class="quantity">
-
-                            <button
-                                class="qty-minus"
-                                type="button"
-                            >
-                                −
-                            </button>
-
-                            <input
-                                class="qty-input"
-                                type="number"
-                                value="1"
-                                min="1"
-                                max="20"
-                            >
-
-                            <button
-                                class="qty-plus"
-                                type="button"
-                            >
-                                +
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    <button
-                        class="add-cart"
-                        type="button"
-                    >
-                        Add to Cart 🛒
-                    </button>
+                        Explore More
+                    </a>
 
                 </div>
 
             </div>
 
+            <div class="scroll-indicator">
+                <span>Scroll</span>
+                <span>↓</span>
+            </div>
 
-            <!-- FRIED MOMOS -->
+        </section>
 
-            <div
-                class="food-card"
-                data-category="fried"
-            >
 
-                <div class="food-image">
+        <!-- =========================================
+             FEATURES
+        ========================================== -->
 
-                    <!-- FRIED MOMOS IMAGE -->
-                    <!-- Yaha apni dusri photo ka link lagao -->
+        <section class="features-section">
 
-                    <img
-                        src="images fried.jpg"
-                        alt="Fried Momos"
-                    >
+            <div class="features-grid">
 
-                    <button
-                        class="fav-btn"
-                        type="button"
-                    >
-                        ♡
-                    </button>
-
+                <div class="feature-card">
+                    <div class="feature-icon">🥟</div>
+                    <h3>Fresh Food</h3>
+                    <p>
+                        Freshly prepared for every order.
+                    </p>
                 </div>
 
-
-                <div class="food-content">
-
-                    <h3 class="food-name">
-                        Fried Momos
-                    </h3>
-
-                    <p class="food-description">
-                        Crispy golden fried momos
-                        with delicious spicy chutney.
+                <div class="feature-card">
+                    <div class="feature-icon">🔥</div>
+                    <h3>Hot & Crispy</h3>
+                    <p>
+                        Served hot and delicious.
                     </p>
+                </div>
 
-                    <div class="food-bottom">
+                <div class="feature-card">
+                    <div class="feature-icon">🚚</div>
+                    <h3>Fast Delivery</h3>
+                    <p>
+                        Flat ₹15 delivery charge.
+                    </p>
+                </div>
 
-                        <strong class="food-price">
-                            ₹50
-                        </strong>
-
-                        <div class="quantity">
-
-                            <button
-                                class="qty-minus"
-                                type="button"
-                            >
-                                −
-                            </button>
-
-                            <input
-                                class="qty-input"
-                                type="number"
-                                value="1"
-                                min="1"
-                                max="20"
-                            >
-
-                            <button
-                                class="qty-plus"
-                                type="button"
-                            >
-                                +
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    <button
-                        class="add-cart"
-                        type="button"
-                    >
-                        Add to Cart 🛒
-                    </button>
-
+                <div class="feature-card">
+                    <div class="feature-icon">❤️</div>
+                    <h3>Homemade</h3>
+                    <p>
+                        Made with care and love.
+                    </p>
                 </div>
 
             </div>
 
-
-            <!-- KURKURE MOMOS -->
-
-            <div
-                class="food-card"
-                data-category="kurkure"
-            >
-
-                <div class="food-image">
-
-                    <!-- KURKURE MOMOS IMAGE -->
-                    <!-- Yaha apni teesri photo ka link lagao -->
-
-                    <img
-                        src="images kurkure.jpg"
-                        alt="Kurkure Momos"
-                    >
-
-                    <button
-                        class="fav-btn"
-                        type="button"
-                    >
-                        ♡
-                    </button>
-
-                </div>
+        </section>
 
 
-                <div class="food-content">
+        <!-- =========================================
+             MENU
+        ========================================== -->
 
-                    <h3 class="food-name">
-                        Kurkure Momos
-                    </h3>
-
-                    <p class="food-description">
-                        Extra crispy crunchy momos
-                        with creamy and spicy dip.
-                    </p>
-
-                    <div class="food-bottom">
-
-                        <strong class="food-price">
-                            ₹60
-                        </strong>
-
-                        <div class="quantity">
-
-                            <button
-                                class="qty-minus"
-                                type="button"
-                            >
-                                −
-                            </button>
-
-                            <input
-                                class="qty-input"
-                                type="number"
-                                value="1"
-                                min="1"
-                                max="20"
-                            >
-
-                            <button
-                                class="qty-plus"
-                                type="button"
-                            >
-                                +
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    <button
-                        class="add-cart"
-                        type="button"
-                    >
-                        Add to Cart 🛒
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- ================= CART ================= -->
-
-    <section
-        id="cart"
-        class="cart-section"
-    >
-
-        <div class="section-heading">
-
-            <p>
-                YOUR ORDER
-            </p>
-
-            <h2>
-                Shopping Cart 🛒
-            </h2>
-
-            <div class="heading-line"></div>
-
-        </div>
-
-
-        <div
-            id="cartItems"
-            class="cart-items"
+        <section
+            id="menu"
+            class="menu-section"
         >
-            <div class="empty-cart">
-                🛒 Your cart is empty
-            </div>
-        </div>
 
+            <div class="section-heading">
 
-        <div class="cart-summary">
+                <p>
+                    OUR SPECIAL MENU
+                </p>
 
-            <div>
-                <span>Subtotal</span>
-                <strong id="subtotal">₹0</strong>
-            </div>
+                <h2>
+                    Choose Your Favourite Momos
+                </h2>
 
-            <div>
-                <span>Delivery</span>
-                <strong id="delivery">₹0</strong>
-            </div>
+                <div class="heading-line"></div>
 
-            <div>
-                <span>Discount</span>
-                <strong id="discount">₹0</strong>
-            </div>
-
-            <div class="grand-total">
-                <span>Total</span>
-                <strong id="grandTotal">₹0</strong>
             </div>
 
 
-            <div class="coupon-box">
+            <!-- FILTER BUTTONS -->
 
-                <input
-                    id="coupon"
-                    type="text"
-                    placeholder="Coupon code"
-                >
+            <div class="filters">
 
                 <button
-                    id="couponBtn"
+                    class="filter-btn active"
+                    data-category="all"
                     type="button"
                 >
-                    Apply
+                    All
+                </button>
+
+                <button
+                    class="filter-btn"
+                    data-category="steam"
+                    type="button"
+                >
+                    Steam
+                </button>
+
+                <button
+                    class="filter-btn"
+                    data-category="fried"
+                    type="button"
+                >
+                    Fried
+                </button>
+
+                <button
+                    class="filter-btn"
+                    data-category="kurkure"
+                    type="button"
+                >
+                    Kurkure
                 </button>
 
             </div>
 
 
-            <button
-                id="cartOrderBtn"
-                class="order-btn"
-                type="button"
+            <!-- FOOD GRID -->
+
+            <div class="food-grid">
+
+
+                <!-- STEAM MOMOS -->
+
+                <article
+                    class="food-card"
+                    data-category="steam"
+                >
+
+                    <div class="food-image">
+
+                        <img
+                            src="images steam .jpg"
+                            alt="Steam Momos"
+                            loading="lazy"
+                            onerror="this.style.display='none'; this.parentElement.classList.add('image-error');"
+                        >
+
+                        <div class="image-placeholder">
+                            🥟
+                        </div>
+
+                        <button
+                            class="fav-btn"
+                            type="button"
+                            aria-label="Add Steam Momos to favourite"
+                        >
+                            ♡
+                        </button>
+
+                        <span class="food-badge">
+                            Popular
+                        </span>
+
+                    </div>
+
+                    <div class="food-content">
+
+                        <h3 class="food-name">
+                            Steam Momos
+                        </h3>
+
+                        <p class="food-description">
+                            Soft and juicy steamed momos
+                            served with spicy chutney.
+                        </p>
+
+                        <div class="food-rating">
+                            ⭐⭐⭐⭐⭐
+                            <span>Fresh</span>
+                        </div>
+
+                        <div class="food-bottom">
+
+                            <strong class="food-price">
+                                ₹40
+                            </strong>
+
+                            <div class="quantity">
+
+                                <button
+                                    class="qty-minus"
+                                    type="button"
+                                    aria-label="Decrease quantity"
+                                >
+                                    −
+                                </button>
+
+                                <input
+                                    class="qty-input"
+                                    type="number"
+                                    value="1"
+                                    min="1"
+                                    max="20"
+                                    aria-label="Quantity"
+                                >
+
+                                <button
+                                    class="qty-plus"
+                                    type="button"
+                                    aria-label="Increase quantity"
+                                >
+                                    +
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <button
+                            class="add-cart"
+                            type="button"
+                        >
+                            Add to Cart 🛒
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+                <!-- FRIED MOMOS -->
+
+                <article
+                    class="food-card"
+                    data-category="fried"
+                >
+
+                    <div class="food-image">
+
+                        <img
+                            src="images fried.jpg"
+                            alt="Fried Momos"
+                            loading="lazy"
+                            onerror="this.style.display='none'; this.parentElement.classList.add('image-error');"
+                        >
+
+                        <div class="image-placeholder">
+                            🥟
+                        </div>
+
+                        <button
+                            class="fav-btn"
+                            type="button"
+                            aria-label="Add Fried Momos to favourite"
+                        >
+                            ♡
+                        </button>
+
+                        <span class="food-badge">
+                            Crispy
+                        </span>
+
+                    </div>
+
+                    <div class="food-content">
+
+                        <h3 class="food-name">
+                            Fried Momos
+                        </h3>
+
+                        <p class="food-description">
+                            Crispy golden fried momos
+                            with delicious spicy chutney.
+                        </p>
+
+                        <div class="food-rating">
+                            ⭐⭐⭐⭐⭐
+                            <span>Hot</span>
+                        </div>
+
+                        <div class="food-bottom">
+
+                            <strong class="food-price">
+                                ₹50
+                            </strong>
+
+                            <div class="quantity">
+
+                                <button
+                                    class="qty-minus"
+                                    type="button"
+                                >
+                                    −
+                                </button>
+
+                                <input
+                                    class="qty-input"
+                                    type="number"
+                                    value="1"
+                                    min="1"
+                                    max="20"
+                                >
+
+                                <button
+                                    class="qty-plus"
+                                    type="button"
+                                >
+                                    +
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <button
+                            class="add-cart"
+                            type="button"
+                        >
+                            Add to Cart 🛒
+                        </button>
+
+                    </div>
+
+                </article>
+
+
+                <!-- KURKURE MOMOS -->
+
+                <article
+                    class="food-card"
+                    data-category="kurkure"
+                >
+
+                    <div class="food-image">
+
+                        <img
+                            src="images kurkure.jpg"
+                            alt="Kurkure Momos"
+                            loading="lazy"
+                            onerror="this.style.display='none'; this.parentElement.classList.add('image-error');"
+                        >
+
+                        <div class="image-placeholder">
+                            🥟
+                        </div>
+
+                        <button
+                            class="fav-btn"
+                            type="button"
+                            aria-label="Add Kurkure Momos to favourite"
+                        >
+                            ♡
+                        </button>
+
+                        <span class="food-badge">
+                            Special
+                        </span>
+
+                    </div>
+
+                    <div class="food-content">
+
+                        <h3 class="food-name">
+                            Kurkure Momos
+                        </h3>
+
+                        <p class="food-description">
+                            Extra crispy crunchy momos
+                            with creamy and spicy dip.
+                        </p>
+
+                        <div class="food-rating">
+                            ⭐⭐⭐⭐⭐
+                            <span>Special</span>
+                        </div>
+
+                        <div class="food-bottom">
+
+                            <strong class="food-price">
+                                ₹60
+                            </strong>
+
+                            <div class="quantity">
+
+                                <button
+                                    class="qty-minus"
+                                    type="button"
+                                >
+                                    −
+                                </button>
+
+                                <input
+                                    class="qty-input"
+                                    type="number"
+                                    value="1"
+                                    min="1"
+                                    max="20"
+                                >
+
+                                <button
+                                    class="qty-plus"
+                                    type="button"
+                                >
+                                    +
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <button
+                            class="add-cart"
+                            type="button"
+                        >
+                            Add to Cart 🛒
+                        </button>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             CART
+        ========================================== -->
+
+        <section
+            id="cart"
+            class="cart-section"
+        >
+
+            <div class="section-heading">
+
+                <p>
+                    YOUR ORDER
+                </p>
+
+                <h2>
+                    Shopping Cart 🛒
+                </h2>
+
+                <div class="heading-line"></div>
+
+            </div>
+
+
+            <div
+                id="cartItems"
+                class="cart-items"
             >
-                Order on WhatsApp 📲
-            </button>
 
-        </div>
+                <div class="empty-cart">
+                    🛒 Your cart is empty
+                </div>
 
-    </section>
-
-
-    <!-- ================= ABOUT ================= -->
-
-    <section
-        id="about"
-        class="about-section"
-    >
-
-        <div class="section-heading">
-
-            <p>
-                ABOUT US
-            </p>
-
-            <h2>
-                Why RAMA MOMO'S?
-            </h2>
-
-            <div class="heading-line"></div>
-
-        </div>
-
-
-        <div class="about-grid">
-
-            <div class="about-box">
-                <span>🥟</span>
-                <h3>Fresh Momos</h3>
-                <p>
-                    Freshly prepared for every order.
-                </p>
             </div>
 
-            <div class="about-box">
-                <span>🔥</span>
-                <h3>Hot & Crispy</h3>
-                <p>
-                    Served hot and delicious.
-                </p>
+
+            <div class="cart-summary">
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <strong id="subtotal">
+                        ₹0
+                    </strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Delivery</span>
+                    <strong id="delivery">
+                        ₹0
+                    </strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Discount</span>
+                    <strong id="discount">
+                        ₹0
+                    </strong>
+                </div>
+
+                <div class="grand-total">
+                    <span>Total</span>
+                    <strong id="grandTotal">
+                        ₹0
+                    </strong>
+                </div>
+
+
+                <div class="coupon-box">
+
+                    <input
+                        id="coupon"
+                        type="text"
+                        placeholder="Coupon code"
+                        autocomplete="off"
+                    >
+
+                    <button
+                        id="couponBtn"
+                        type="button"
+                    >
+                        Apply
+                    </button>
+
+                </div>
+
+
+                <button
+                    id="checkoutBtn"
+                    class="order-btn"
+                    type="button"
+                >
+                    Continue to Address →
+                </button>
+
             </div>
 
-            <div class="about-box">
-                <span>❤️</span>
-                <h3>Made With Love</h3>
+        </section>
+
+
+        <!-- =========================================
+             CUSTOMER ADDRESS + LOCATION
+        ========================================== -->
+
+        <section
+            id="checkout"
+            class="checkout-section"
+        >
+
+            <div class="section-heading">
+
                 <p>
-                    Homemade taste in every bite.
+                    DELIVERY DETAILS
                 </p>
+
+                <h2>
+                    Where Should We Deliver? 📍
+                </h2>
+
+                <div class="heading-line"></div>
+
             </div>
 
-        </div>
 
-    </section>
-
-
-    <!-- ================= CONTACT ================= -->
-
-    <section
-        id="contact"
-        class="contact-section"
-    >
-
-        <div class="section-heading">
-
-            <p>
-                CONTACT US
-            </p>
-
-            <h2>
-                Order Your Momos
-            </h2>
-
-            <div class="heading-line"></div>
-
-        </div>
+            <div class="checkout-grid">
 
 
-        <div class="contact-box">
+                <!-- ADDRESS FORM -->
 
-            <p>
-                📱 WhatsApp:
-                <strong>
+                <div class="address-card">
+
+                    <h3>
+                        Customer Address
+                    </h3>
+
+                    <p class="form-note">
+                        Please enter your delivery address.
+                    </p>
+
+                    <form id="addressForm">
+
+                        <label for="customerName">
+                            Full Name
+                        </label>
+
+                        <input
+                            id="customerName"
+                            type="text"
+                            placeholder="Enter your name"
+                            required
+                            autocomplete="name"
+                        >
+
+
+                        <label for="customerPhone">
+                            Mobile Number
+                        </label>
+
+                        <input
+                            id="customerPhone"
+                            type="tel"
+                            placeholder="10 digit mobile number"
+                            maxlength="10"
+                            required
+                            autocomplete="tel"
+                        >
+
+
+                        <label for="customerAddress">
+                            Complete Address
+                        </label>
+
+                        <textarea
+                            id="customerAddress"
+                            rows="4"
+                            placeholder="House no, street, area..."
+                            required
+                        ></textarea>
+
+
+                        <label for="customerLandmark">
+                            Landmark
+                        </label>
+
+                        <input
+                            id="customerLandmark"
+                            type="text"
+                            placeholder="Nearby landmark"
+                        >
+
+
+                        <div class="location-buttons">
+
+                            <button
+                                id="locationBtn"
+                                class="location-btn"
+                                type="button"
+                            >
+                                📍 Use My Current Location
+                            </button>
+
+                        </div>
+
+                        <p
+                            id="locationStatus"
+                            class="location-status"
+                        >
+                            Location permission is optional.
+                        </p>
+
+
+                        <input
+                            type="hidden"
+                            id="customerLatitude"
+                        >
+
+                        <input
+                            type="hidden"
+                            id="customerLongitude"
+                        >
+
+
+                        <button
+                            id="placeOrderBtn"
+                            class="main-btn checkout-btn"
+                            type="submit"
+                        >
+                            Place Order 🛒
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                <!-- MAP -->
+
+                <div class="map-card">
+
+                    <div class="map-header">
+
+                        <h3>
+                            📍 Delivery Location
+                        </h3>
+
+                        <span>
+                            GPS
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        id="mapContainer"
+                        class="map-container"
+                    >
+
+                        <div class="map-placeholder">
+
+                            <div class="map-pin">
+                                📍
+                            </div>
+
+                            <h3>
+                                Your Location
+                            </h3>
+
+                            <p>
+                                Allow location permission
+                                to select your current location.
+                            </p>
+
+                            <button
+                                id="mapLocationBtn"
+                                class="location-btn"
+                                type="button"
+                            >
+                                Get My Location
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="map-info">
+
+                        <p>
+                            <strong>Latitude:</strong>
+                            <span id="mapLatitude">
+                                Not selected
+                            </span>
+                        </p>
+
+                        <p>
+                            <strong>Longitude:</strong>
+                            <span id="mapLongitude">
+                                Not selected
+                            </span>
+                        </p>
+
+                    </div>
+
+                    <p class="map-note">
+                        🔒 Your location will only be shared
+                        with the seller after permission.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             ORDER STATUS
+        ========================================== -->
+
+        <section
+            id="orders"
+            class="orders-section"
+        >
+
+            <div class="section-heading">
+
+                <p>
+                    ORDER TRACKING
+                </p>
+
+                <h2>
+                    Your Order Status 📦
+                </h2>
+
+                <div class="heading-line"></div>
+
+            </div>
+
+
+            <div
+                id="customerOrders"
+                class="customer-orders"
+            >
+
+                <div class="no-orders">
+                    📦 No orders placed yet.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             SELLER PANEL
+        ========================================== -->
+
+        <section
+            id="sellerPanel"
+            class="seller-section"
+        >
+
+            <div class="section-heading">
+
+                <p>
+                    SELLER AREA
+                </p>
+
+                <h2>
+                    Seller Order Panel 👨‍💼
+                </h2>
+
+                <div class="heading-line"></div>
+
+            </div>
+
+
+            <div class="seller-header">
+
+                <div>
+                    <h3>
+                        New & Recent Orders
+                    </h3>
+
+                    <p>
+                        Manage customer orders and status.
+                    </p>
+                </div>
+
+                <span
+                    id="sellerOrderCount"
+                    class="seller-count"
+                >
+                    0 Orders
+                </span>
+
+            </div>
+
+
+            <div
+                id="sellerOrders"
+                class="seller-orders"
+            >
+
+                <div class="no-orders">
+                    🔔 No new orders.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             ABOUT
+        ========================================== -->
+
+        <section
+            id="about"
+            class="about-section"
+        >
+
+            <div class="section-heading">
+
+                <p>
+                    ABOUT US
+                </p>
+
+                <h2>
+                    Why RAMA MOMO'S?
+                </h2>
+
+                <div class="heading-line"></div>
+
+            </div>
+
+
+            <div class="about-grid">
+
+                <div class="about-box">
+
+                    <span>🥟</span>
+
+                    <h3>
+                        Fresh Momos
+                    </h3>
+
+                    <p>
+                        Freshly prepared for every order.
+                    </p>
+
+                </div>
+
+
+                <div class="about-box">
+
+                    <span>🔥</span>
+
+                    <h3>
+                        Hot & Crispy
+                    </h3>
+
+                    <p>
+                        Served hot and delicious.
+                    </p>
+
+                </div>
+
+
+                <div class="about-box">
+
+                    <span>❤️</span>
+
+                    <h3>
+                        Made With Love
+                    </h3>
+
+                    <p>
+                        Homemade taste in every bite.
+                    </p>
+
+                </div>
+
+
+                <div class="about-box">
+
+                    <span>🚚</span>
+
+                    <h3>
+                        Only ₹15 Delivery
+                    </h3>
+
+                    <p>
+                        Simple flat delivery charge
+                        on every order.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             CONTACT
+        ========================================== -->
+
+        <section
+            id="contact"
+            class="contact-section"
+        >
+
+            <div class="section-heading">
+
+                <p>
+                    CONTACT US
+                </p>
+
+                <h2>
+                    Order Your Momos
+                </h2>
+
+                <div class="heading-line"></div>
+
+            </div>
+
+
+            <div class="contact-box">
+
+                <div class="contact-icon">
+                    📱
+                </div>
+
+                <h3>
+                    WhatsApp
+                </h3>
+
+                <p>
                     9359874910
-                </strong>
-            </p>
+                </p>
 
-            <a
-                href="https://wa.me/919359874910"
-                target="_blank"
-                class="main-btn"
-            >
-                WhatsApp Us 📲
-            </a>
+                <a
+                    href="https://wa.me/919359874910"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="main-btn"
+                >
+                    WhatsApp Us 📲
+                </a>
 
-        </div>
+            </div>
 
-    </section>
+        </section>
+
+    </main>
 
 
-    <!-- ================= FOOTER ================= -->
+    <!-- =========================================
+         FOOTER
+    ========================================== -->
 
     <footer class="footer">
 
@@ -623,6 +1109,10 @@
             Fresh • Hot • Homemade
         </p>
 
+        <p class="footer-delivery">
+            🚚 Flat ₹15 Delivery on Every Order
+        </p>
+
         <p class="copyright">
             © 2026 RAMA MOMO'S
         </p>
@@ -630,15 +1120,56 @@
     </footer>
 
 
-    <!-- TOAST -->
+    <!-- =========================================
+         TOAST
+    ========================================== -->
 
     <div
         id="toast-container"
         class="toast-container"
+        aria-live="polite"
     ></div>
 
 
-    <!-- JAVASCRIPT -->
+    <!-- =========================================
+         NEW ORDER NOTIFICATION
+    ========================================== -->
+
+    <div
+        id="orderNotification"
+        class="order-notification"
+    >
+
+        <div class="notification-icon">
+            🔔
+        </div>
+
+        <div class="notification-content">
+
+            <strong>
+                New Order
+            </strong>
+
+            <p id="notificationText">
+                You have a new order.
+            </p>
+
+        </div>
+
+        <button
+            id="closeNotification"
+            type="button"
+            aria-label="Close notification"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <!-- =========================================
+         JAVASCRIPT
+    ========================================== -->
 
     <script src="script.js"></script>
 
