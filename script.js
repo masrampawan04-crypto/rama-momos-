@@ -886,11 +886,9 @@ function updateTotals() {
     if (delivery) {
 
         delivery.textContent =
-            totals.delivery > 0
-                ? "₹15"
-                : "₹0";
-
-    }
+    totals.delivery > 0
+        ? "₹" + totals.delivery
+        : "₹0";
 
 
     if (discount) {
@@ -1891,41 +1889,27 @@ function renderSellerOrders() {
    UPDATE ORDER STATUS
    ===================================================== */
 
-function updateOrderStatus(
-    orderID,
-    status
-) {
+function updateOrderStatus(orderID, status) {
 
-    const order =
-        orders.find(
-            function (item) {
-
-                return item.id === orderID;
-
-            }
-        );
-
+    const order = orders.find(function (item) {
+        return item.id === orderID;
+    });
 
     if (!order) {
+        showToast("Order not found");
         return;
     }
 
-
     order.status = status;
-
 
     saveOrders();
 
     renderSellerOrders();
-
+    renderCustomerOrders();
 
     showToast(
-        "Order " +
-        orderID +
-        " → " +
-        status
+        "Order " + orderID + " → " + status
     );
-
 }
 
 
