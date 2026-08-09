@@ -1322,83 +1322,41 @@ function placeOrder() {
    WHATSAPP ORDER
    ===================================================== */
 
-function sendOrderToWhatsApp(
-    order
-) {
+function sendOrderToWhatsApp(order) {
 
-    let message =
-        "🥟 RAMA MOMO'S NEW ORDER\n\n";
+    let message = "🥟 RAMA MOMO'S NEW ORDER\n\n";
 
+    message += "Order ID: " + order.id + "\n";
+    message += "Customer: " + order.customer.name + "\n";
+    message += "Phone: " + order.customer.phone + "\n";
+    message += "Address: " + order.customer.address + "\n\n";
 
-    message +=
-        "Order ID: " +
-        order.id +
-        "\n";
+    message += "🛒 ORDER ITEMS\n\n";
 
+    order.items.forEach(function (item, index) {
 
-    message +=
-        "Customer: " +
-        order.customer.name +
-        "\n";
+        const itemTotal =
+            Number(item.price) * Number(item.quantity);
 
+        message +=
+            (index + 1) + ". " +
+            item.name +
+            " × " +
+            item.quantity +
+            " = ₹" +
+            itemTotal +
+            "\n";
+    });
 
-    message +=
-        "Phone: " +
-        order.customer.phone +
-        "\n";
-
-
-    message +=
-        "Address: " +
-        order.customer.address +
-        "\n\n";
-
-
-    message +=
-        "ITEMS:\n";
-
-
-    order.items.forEach(
-        function (item) {
-
-            message +=
-                item.name +
-                " × " +
-                item.quantity +
-                " = ₹" +
-                (
-                    item.price *
-                    item.quantity
-                ) +
-                "\n";
-
-        }
-    );
-
-
-    message +=
-        "\nSubtotal: ₹" +
-        order.subtotal;
-
-
-    message +=
-        "\nDelivery: ₹" +
-        order.delivery;
-
-
-    message +=
-        "\nDiscount: ₹" +
-        order.discount;
-
-
-    message +=
-        "\nTOTAL: ₹" +
-        order.total;
-
+    message += "\nSubtotal: ₹" + order.subtotal;
+    message += "\nDelivery: ₹" + order.delivery;
+    message += "\nDiscount: ₹" + order.discount;
+    message += "\nTOTAL: ₹" + order.total;
 
     if (
         order.location &&
-        order.location.latitude
+        order.location.latitude &&
+        order.location.longitude
     ) {
 
         const mapLink =
@@ -1407,32 +1365,21 @@ function sendOrderToWhatsApp(
             "," +
             order.location.longitude;
 
-
         message +=
             "\n\n📍 CUSTOMER LOCATION:\n" +
             mapLink;
-
     }
 
-
-    message +=
-        "\n\nPlease confirm this order.";
-
+    message += "\n\nPlease confirm this order.";
 
     const url =
         "https://wa.me/" +
         SELLER_WHATSAPP +
         "?text=" +
-        encodeURIComponent(
-            message
-        );
+        encodeURIComponent(message);
 
-
-    window.open(
-        url,
-        "_blank"
-    );
-
+    window.open(url, "_blank");
+}
 }
 
 
