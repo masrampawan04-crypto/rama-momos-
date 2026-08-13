@@ -1,72 +1,141 @@
-/* =========================================================
-   RAMA MOMO'S - COMPLETE JAVASCRIPT
-========================================================= */
+/* =====================================================
+   RAMA MOMO'S - FINAL SCRIPT
+===================================================== */
 
 "use strict";
 
 
-/* ================= SETTINGS ================= */
-
-const DELIVERY_CHARGE = 15;
+/* =====================================================
+   SETTINGS
+===================================================== */
 
 const SELLER_WHATSAPP = "919359874910";
 
+const DELIVERY_CHARGE = 15;
 
-/* ================= DATA ================= */
+const CART_KEY = "ramaCart";
 
-let cart = JSON.parse(
-    localStorage.getItem("ramaCart") || "[]"
-);
+const ORDERS_KEY = "ramaOrders";
 
-let orders = JSON.parse(
-    localStorage.getItem("ramaOrders") || "[]"
-);
+const REVIEWS_KEY = "ramaReviews";
 
-let reviews = JSON.parse(
-    localStorage.getItem("ramaReviews") || "[]"
-);
-
-let appliedCoupon = false;
-
-let selectedRating = 0;
-
-let customerLocation = null;
+const DARK_KEY = "ramaDarkMode";
 
 
-/* ================= HELPERS ================= */
+/* =====================================================
+   DATA
+===================================================== */
 
-function $(selector) {
-    return document.querySelector(selector);
+let cart = [];
+
+let orders = [];
+
+let reviews = [];
+
+let appliedDiscount = 0;
+
+
+try {
+
+    cart =
+        JSON.parse(
+            localStorage.getItem(CART_KEY)
+        ) || [];
+
+    orders =
+        JSON.parse(
+            localStorage.getItem(ORDERS_KEY)
+        ) || [];
+
+    reviews =
+        JSON.parse(
+            localStorage.getItem(REVIEWS_KEY)
+        ) || [];
+
+} catch (error) {
+
+    cart = [];
+    orders = [];
+    reviews = [];
+
 }
 
-function $$(selector) {
-    return document.querySelectorAll(selector);
-}
+
+/* =====================================================
+   DOM READY
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        setupMobileMenu();
+
+        setupDarkMode();
+
+        setupFilters();
+
+        setupQuantityButtons();
+
+        setupFavouriteButtons();
+
+        setupCartButtons();
+
+        setupCoupon();
+
+        setupCheckout();
+
+        setupLocation();
+
+        setupReviews();
+
+        setup3DMomo();
+
+        renderCart();
+
+        renderOrders();
+
+        renderReviews();
+
+        renderSellerOrders();
+
+    }
+);
+
+
+/* =====================================================
+   HELPERS
+===================================================== */
 
 function saveCart() {
+
     localStorage.setItem(
-        "ramaCart",
+        CART_KEY,
         JSON.stringify(cart)
     );
+
 }
+
 
 function saveOrders() {
+
     localStorage.setItem(
-        "ramaOrders",
+        ORDERS_KEY,
         JSON.stringify(orders)
     );
+
 }
+
 
 function saveReviews() {
+
     localStorage.setItem(
-        "ramaReviews",
+        REVIEWS_KEY,
         JSON.stringify(reviews)
     );
+
 }
 
-function money(amount) {
-    return "₹" + Number(amount || 0);
-}
 
 function escapeHTML(value) {
 
@@ -76,303 +145,506 @@ function escapeHTML(value) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
-}
-
-
-/* ================= MOBILE MENU ================= */
-
-$("#menuBtn")?.addEventListener(
-    "click",
-    function () {
-
-        $("#navMenu")?.classList.toggle("show");
-
-    }
-);
-
-
-$$(".nav-menu a").forEach(function (link) {
-
-    link.addEventListener(
-        "click",
-        function () {
-
-            $("#navMenu")?.classList.remove("show");
-
-        }
-    );
-
-});
-
-
-/* ================= DARK MODE ================= */
-
-$("#darkBtn")?.addEventListener(
-    "click",
-    function () {
-
-        document.body.classList.toggle("dark");
-
-        localStorage.setItem(
-            "ramaDarkMode",
-            document.body.classList.contains("dark")
-        );
-
-    }
-);
-
-
-if (
-    localStorage.getItem("ramaDarkMode") === "true"
-) {
-
-    document.body.classList.add("dark");
 
 }
 
 
-/* ================= FILTER ================= */
+function showToast(message) {
 
-$$(".filter-btn").forEach(function (button) {
+    const toast =
+        document.getElementById("toast");
 
-    button.addEventListener(
-        "click",
-        function () {
+    if (!toast) return;
 
-            $$(".filter-btn").forEach(
-                function (item) {
-                    item.classList.remove("active");
-                }
-            );
+    toast.textContent = message;
 
-            button.classList.add("active");
+    toast.classList.add("show");
 
-            const category =
-                button.dataset.category;
-
-            $$(".food-card").forEach(
-                function (card) {
-
-                    if (
-                        category === "all" ||
-                        card.dataset.category === category
-                    ) {
-
-                        card.style.display = "";
-
-                    } else {
-
-                        card.style.display = "none";
-
-                    }
-
-                }
-            );
-
-        }
+    clearTimeout(
+        window.ramaToastTimer
     );
 
-});
+    window.ramaToastTimer =
+        setTimeout(() => {
+
+            toast.classList.remove("show");
+
+        }, 3000);
+
+}
 
 
-/* ================= FAVOURITE ================= */
+/* =====================================================
+   MOBILE MENU
+===================================================== */
 
-$$(".fav-btn").forEach(function (button) {
+function setupMobileMenu() {
 
-    button.addEventListener(
+    const menuBtn =
+        document.getElementById("menuBtn");
+
+    const navMenu =
+        document.getElementById("navMenu");
+
+    if (!menuBtn || !navMenu) return;
+
+
+    menuBtn.addEventListener(
         "click",
-        function () {
+        () => {
 
-            button.classList.toggle("active");
-
-            button.textContent =
-                button.classList.contains("active")
-                    ? "♥"
-                    : "♡";
-
-        }
-    );
-
-});
-
-
-/* ================= QUANTITY ================= */
-
-$$(".food-card").forEach(function (card) {
-
-    const minus =
-        card.querySelector(".qty-minus");
-
-    const plus =
-        card.querySelector(".qty-plus");
-
-    const input =
-        card.querySelector(".qty-input");
-
-
-    minus?.addEventListener(
-        "click",
-        function () {
-
-            let value =
-                Number(input.value) || 1;
-
-            value = Math.max(1, value - 1);
-
-            input.value = value;
+            navMenu.classList.toggle("show");
 
         }
     );
 
 
-    plus?.addEventListener(
-        "click",
-        function () {
+    navMenu
+        .querySelectorAll("a")
+        .forEach(link => {
 
-            let value =
-                Number(input.value) || 1;
+            link.addEventListener(
+                "click",
+                () => {
 
-            value = Math.min(20, value + 1);
-
-            input.value = value;
-
-        }
-    );
-
-});
-
-
-/* ================= ADD TO CART ================= */
-
-$$(".add-cart").forEach(function (button) {
-
-    button.addEventListener(
-        "click",
-        function () {
-
-            const card =
-                button.closest(".food-card");
-
-            if (!card) return;
-
-            const name =
-                card.querySelector(".food-name")
-                    ?.textContent.trim();
-
-            const priceText =
-                card.querySelector(".food-price")
-                    ?.textContent
-                    .replace(/[^\d]/g, "");
-
-            const price =
-                Number(priceText) || 0;
-
-            const quantityInput =
-                card.querySelector(".qty-input");
-
-            const quantity =
-                Math.max(
-                    1,
-                    Math.min(
-                        20,
-                        Number(quantityInput?.value) || 1
-                    )
-                );
-
-
-            const existing =
-                cart.find(
-                    function (item) {
-                        return item.name === name;
-                    }
-                );
-
-
-            if (existing) {
-
-                existing.quantity =
-                    Math.min(
-                        20,
-                        existing.quantity + quantity
+                    navMenu.classList.remove(
+                        "show"
                     );
 
-            } else {
+                }
+            );
 
-                cart.push({
-                    name,
-                    price,
-                    quantity
+        });
+
+}
+
+
+/* =====================================================
+   DARK MODE
+===================================================== */
+
+function setupDarkMode() {
+
+    const darkBtn =
+        document.getElementById("darkBtn");
+
+    if (!darkBtn) return;
+
+
+    const saved =
+        localStorage.getItem(
+            DARK_KEY
+        );
+
+
+    if (saved === "true") {
+
+        document.body.classList.add(
+            "dark"
+        );
+
+        darkBtn.textContent = "☀️";
+
+    }
+
+
+    darkBtn.addEventListener(
+        "click",
+        () => {
+
+            const enabled =
+                document.body.classList.toggle(
+                    "dark"
+                );
+
+
+            localStorage.setItem(
+                DARK_KEY,
+                enabled
+            );
+
+
+            darkBtn.textContent =
+                enabled ? "☀️" : "🌙";
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   FILTERS
+===================================================== */
+
+function setupFilters() {
+
+    const buttons =
+        document.querySelectorAll(
+            ".filter-btn"
+        );
+
+    const cards =
+        document.querySelectorAll(
+            ".food-card"
+        );
+
+
+    buttons.forEach(button => {
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                buttons.forEach(
+                    btn =>
+                        btn.classList.remove(
+                            "active"
+                        )
+                );
+
+
+                button.classList.add(
+                    "active"
+                );
+
+
+                const category =
+                    button.dataset.category;
+
+
+                cards.forEach(card => {
+
+                    const show =
+                        category === "all" ||
+                        card.dataset.category ===
+                            category;
+
+
+                    card.style.display =
+                        show ? "" : "none";
+
                 });
 
             }
+        );
+
+    });
+
+}
 
 
-            saveCart();
+/* =====================================================
+   QUANTITY
+===================================================== */
 
-            renderCart();
+function setupQuantityButtons() {
 
-            updateCartCount();
+    document
+        .querySelectorAll(".food-card")
+        .forEach(card => {
 
-            updateTotals();
+            const minus =
+                card.querySelector(
+                    ".qty-minus"
+                );
 
-            showToast(
-                name + " added to cart 🛒"
+            const plus =
+                card.querySelector(
+                    ".qty-plus"
+                );
+
+            const input =
+                card.querySelector(
+                    ".qty-input"
+                );
+
+
+            if (!minus || !plus || !input)
+                return;
+
+
+            minus.addEventListener(
+                "click",
+                () => {
+
+                    let value =
+                        parseInt(
+                            input.value,
+                            10
+                        ) || 1;
+
+
+                    value--;
+
+                    if (value < 1)
+                        value = 1;
+
+
+                    input.value = value;
+
+                }
             );
 
-        }
+
+            plus.addEventListener(
+                "click",
+                () => {
+
+                    let value =
+                        parseInt(
+                            input.value,
+                            10
+                        ) || 1;
+
+
+                    value++;
+
+                    if (value > 20)
+                        value = 20;
+
+
+                    input.value = value;
+
+                }
+            );
+
+
+            input.addEventListener(
+                "input",
+                () => {
+
+                    let value =
+                        parseInt(
+                            input.value,
+                            10
+                        ) || 1;
+
+
+                    if (value < 1)
+                        value = 1;
+
+                    if (value > 20)
+                        value = 20;
+
+
+                    input.value = value;
+
+                }
+            );
+
+        });
+
+}
+
+
+/* =====================================================
+   FAVOURITE
+===================================================== */
+
+function setupFavouriteButtons() {
+
+    document
+        .querySelectorAll(".fav-btn")
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const active =
+                        button.classList.toggle(
+                            "active"
+                        );
+
+
+                    button.textContent =
+                        active ? "♥" : "♡";
+
+                }
+            );
+
+        });
+
+}
+
+
+/* =====================================================
+   ADD TO CART
+===================================================== */
+
+function setupCartButtons() {
+
+    document
+        .querySelectorAll(".food-card")
+        .forEach(card => {
+
+            const button =
+                card.querySelector(
+                    ".add-cart"
+                );
+
+
+            if (!button) return;
+
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const name =
+                        card.dataset.name ||
+                        card
+                            .querySelector(
+                                ".food-name"
+                            )
+                            ?.textContent
+                            .trim();
+
+
+                    const price =
+                        parseInt(
+                            card.dataset.price,
+                            10
+                        ) || 0;
+
+
+                    const input =
+                        card.querySelector(
+                            ".qty-input"
+                        );
+
+
+                    const quantity =
+                        Math.max(
+                            1,
+                            Math.min(
+                                20,
+                                parseInt(
+                                    input?.value,
+                                    10
+                                ) || 1
+                            )
+                        );
+
+
+                    addToCart(
+                        name,
+                        price,
+                        quantity
+                    );
+
+
+                    input.value = 1;
+
+                }
+            );
+
+        });
+
+}
+
+
+/* =====================================================
+   ADD ITEM
+===================================================== */
+
+function addToCart(
+    name,
+    price,
+    quantity
+) {
+
+    if (!name || price <= 0)
+        return;
+
+
+    const existing =
+        cart.find(
+            item =>
+                item.name === name
+        );
+
+
+    if (existing) {
+
+        existing.quantity += quantity;
+
+        if (existing.quantity > 20)
+            existing.quantity = 20;
+
+    } else {
+
+        cart.push({
+
+            id:
+                Date.now() +
+                Math.random(),
+
+            name,
+
+            price,
+
+            quantity
+
+        });
+
+    }
+
+
+    saveCart();
+
+    renderCart();
+
+    showToast(
+        `${name} added to cart 🛒`
     );
 
-});
+}
 
 
-/* ================= CART COUNT ================= */
+/* =====================================================
+   CART COUNT
+===================================================== */
 
 function updateCartCount() {
 
     const count =
+        document.getElementById(
+            "cart-count"
+        );
+
+
+    if (!count) return;
+
+
+    const total =
         cart.reduce(
-            function (total, item) {
-                return total +
-                    Number(item.quantity || 0);
-            },
+            (sum, item) =>
+                sum + item.quantity,
             0
         );
 
-    const element =
-        $("#cart-count");
 
-    if (element) {
-        element.textContent = count;
-    }
+    count.textContent = total;
 
 }
 
 
-/* ================= TOTALS ================= */
+/* =====================================================
+   CALCULATE TOTAL
+===================================================== */
 
 function calculateTotals() {
 
     const subtotal =
         cart.reduce(
-            function (total, item) {
-
-                return total +
-                    Number(item.price || 0) *
-                    Number(item.quantity || 0);
-
-            },
+            (sum, item) =>
+                sum +
+                item.price *
+                item.quantity,
             0
         );
-
-
-    let discount = 0;
-
-    if (appliedCoupon) {
-
-        discount =
-            Math.round(subtotal * 0.10);
-
-    }
 
 
     const delivery =
@@ -381,10 +653,17 @@ function calculateTotals() {
             : 0;
 
 
+    const discount =
+        Math.min(
+            appliedDiscount,
+            subtotal
+        );
+
+
     const total =
-        subtotal -
-        discount +
-        delivery;
+        subtotal +
+        delivery -
+        discount;
 
 
     return {
@@ -397,50 +676,76 @@ function calculateTotals() {
 }
 
 
-function updateTotals() {
-
-    const totals =
-        calculateTotals();
-
-    if ($("#subtotal")) {
-        $("#subtotal").textContent =
-            money(totals.subtotal);
-    }
-
-    if ($("#delivery")) {
-        $("#delivery").textContent =
-            money(totals.delivery);
-    }
-
-    if ($("#discount")) {
-        $("#discount").textContent =
-            money(totals.discount);
-    }
-
-    if ($("#grandTotal")) {
-        $("#grandTotal").textContent =
-            money(totals.total);
-    }
-
-}
-
-
-/* ================= RENDER CART ================= */
+/* =====================================================
+   RENDER CART
+===================================================== */
 
 function renderCart() {
 
     const container =
-        $("#cartItems");
+        document.getElementById(
+            "cartItems"
+        );
+
 
     if (!container) return;
 
 
+    updateCartCount();
+
+
+    const totals =
+        calculateTotals();
+
+
+    const subtotalEl =
+        document.getElementById(
+            "subtotal"
+        );
+
+    const deliveryEl =
+        document.getElementById(
+            "delivery"
+        );
+
+    const discountEl =
+        document.getElementById(
+            "discount"
+        );
+
+    const totalEl =
+        document.getElementById(
+            "grandTotal"
+        );
+
+
+    if (subtotalEl)
+        subtotalEl.textContent =
+            `₹${totals.subtotal}`;
+
+
+    if (deliveryEl)
+        deliveryEl.textContent =
+            `₹${totals.delivery}`;
+
+
+    if (discountEl)
+        discountEl.textContent =
+            `₹${totals.discount}`;
+
+
+    if (totalEl)
+        totalEl.textContent =
+            `₹${totals.total}`;
+
+
     if (cart.length === 0) {
 
-        container.innerHTML =
-            '<div class="empty-cart">' +
-            '🛒 Your cart is empty' +
-            '</div>';
+        container.innerHTML = `
+            <div class="empty-cart">
+                🛒 Your cart is empty.
+            </div>
+        `;
 
         return;
 
@@ -451,62 +756,56 @@ function renderCart() {
 
 
     cart.forEach(
-        function (item, index) {
+        (item, index) => {
 
-            const itemTotal =
-                Number(item.price) *
-                Number(item.quantity);
+            const total =
+                item.price *
+                item.quantity;
 
 
             const div =
-                document.createElement("div");
-
-            div.className = "cart-item";
-
-
-            div.innerHTML =
-
-                "<div>" +
-
-                "<strong>" +
-                escapeHTML(item.name) +
-                "</strong>" +
-
-                "<p>" +
-                money(item.price) +
-                " × " +
-                item.quantity +
-                " = " +
-                money(itemTotal) +
-                "</p>" +
-
-                "</div>" +
+                document.createElement(
+                    "div"
+                );
 
 
-                "<div>" +
+            div.className =
+                "cart-item";
 
-                "<button " +
-                'class="qty-minus cart-minus" ' +
-                'data-index="' + index + '"' +
-                ">−</button>" +
 
-                "<strong>" +
-                item.quantity +
-                "</strong>" +
+            div.innerHTML = `
 
-                "<button " +
-                'class="qty-plus cart-plus" ' +
-                'data-index="' + index + '"' +
-                ">+</button>" +
+                <div>
 
-                "<button " +
-                'class="remove-cart" ' +
-                'data-index="' + index + '"' +
-                ">" +
-                "Remove" +
-                "</button>" +
+                    <h3>
+                        ${escapeHTML(item.name)}
+                    </h3>
 
-                "</div>";
+                    <p>
+                        ₹${item.price}
+                        ×
+                        ${item.quantity}
+                    </p>
+
+                </div>
+
+                <div class="cart-item-price">
+
+                    <strong>
+                        ₹${total}
+                    </strong>
+
+                    <br>
+
+                    <button
+                        class="remove-cart"
+                        type="button"
+                        data-index="${index}">
+                        Remove
+                    </button>
+
+                </div>
+            `;
 
 
             container.appendChild(div);
@@ -515,333 +814,270 @@ function renderCart() {
     );
 
 
-    $$(".cart-minus").forEach(
-        function (button) {
+    container
+        .querySelectorAll(".remove-cart")
+        .forEach(button => {
 
             button.addEventListener(
                 "click",
-                function () {
+                () => {
 
                     const index =
-                        Number(button.dataset.index);
+                        parseInt(
+                            button.dataset.index,
+                            10
+                        );
 
-                    if (
-                        cart[index] &&
-                        cart[index].quantity > 1
-                    ) {
 
-                        cart[index].quantity--;
+                    cart.splice(
+                        index,
+                        1
+                    );
 
-                    } else {
-
-                        cart.splice(index, 1);
-
-                    }
 
                     saveCart();
 
                     renderCart();
-
-                    updateCartCount();
-
-                    updateTotals();
-
-                }
-            );
-
-        }
-    );
-
-
-    $$(".cart-plus").forEach(
-        function (button) {
-
-            button.addEventListener(
-                "click",
-                function () {
-
-                    const index =
-                        Number(button.dataset.index);
-
-                    if (cart[index]) {
-
-                        cart[index].quantity =
-                            Math.min(
-                                20,
-                                cart[index].quantity + 1
-                            );
-
-                    }
-
-                    saveCart();
-
-                    renderCart();
-
-                    updateCartCount();
-
-                    updateTotals();
-
-                }
-            );
-
-        }
-    );
-
-
-    $$(".remove-cart").forEach(
-        function (button) {
-
-            button.addEventListener(
-                "click",
-                function () {
-
-                    const index =
-                        Number(button.dataset.index);
-
-                    cart.splice(index, 1);
-
-                    saveCart();
-
-                    renderCart();
-
-                    updateCartCount();
-
-                    updateTotals();
 
                     showToast(
-                        "Item removed"
+                        "Item removed ❌"
                     );
 
                 }
             );
 
-        }
-    );
+        });
 
 }
 
 
-/* ================= COUPON ================= */
+/* =====================================================
+   COUPON
+===================================================== */
 
-$("#couponBtn")?.addEventListener(
-    "click",
-    function () {
+function setupCoupon() {
 
-        const code =
-            $("#coupon")?.value
-                .trim()
-                .toUpperCase();
-
-
-        if (code === "RAMA10") {
-
-            appliedCoupon = true;
-
-            updateTotals();
-
-            showToast(
-                "10% discount applied 🎉"
-            );
-
-        } else {
-
-            appliedCoupon = false;
-
-            updateTotals();
-
-            showToast(
-                "Invalid coupon ❌"
-            );
-
-        }
-
-    }
-);
-
-
-/* ================= CHECKOUT BUTTON ================= */
-
-$("#checkoutBtn")?.addEventListener(
-    "click",
-    function () {
-
-        if (cart.length === 0) {
-
-            showToast(
-                "Your cart is empty 🛒"
-            );
-
-            return;
-
-        }
-
-        document
-            .querySelector("#checkout")
-            ?.scrollIntoView({
-                behavior: "smooth"
-            });
-
-    }
-);
-
-
-/* ================= LOCATION ================= */
-
-function getLocation() {
-
-    if (!navigator.geolocation) {
-
-        showToast(
-            "GPS is not supported ❌"
+    const button =
+        document.getElementById(
+            "couponBtn"
         );
 
+    const input =
+        document.getElementById(
+            "coupon"
+        );
+
+
+    if (!button || !input)
         return;
 
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            const code =
+                input.value
+                    .trim()
+                    .toUpperCase();
+
+
+            if (code === "WELCOME") {
+
+                appliedDiscount = 20;
+
+                renderCart();
+
+                showToast(
+                    "₹20 discount applied 🎉"
+                );
+
+            } else {
+
+                appliedDiscount = 0;
+
+                renderCart();
+
+                showToast(
+                    "Invalid coupon code"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   CHECKOUT
+===================================================== */
+
+function setupCheckout() {
+
+    const checkoutBtn =
+        document.getElementById(
+            "checkoutBtn"
+        );
+
+    const checkout =
+        document.getElementById(
+            "checkout"
+        );
+
+
+    if (checkoutBtn && checkout) {
+
+        checkoutBtn.addEventListener(
+            "click",
+            () => {
+
+                if (cart.length === 0) {
+
+                    showToast(
+                        "Please add items first 🛒"
+                    );
+
+                    return;
+
+                }
+
+
+                checkout.scrollIntoView({
+                    behavior: "smooth"
+                });
+
+            }
+        );
+
     }
 
 
-    showToast(
-        "Getting your location 📍"
-    );
-
-
-    navigator.geolocation.getCurrentPosition(
-
-        function (position) {
-
-            const latitude =
-                position.coords.latitude;
-
-            const longitude =
-                position.coords.longitude;
-
-
-            customerLocation = {
-                latitude,
-                longitude
-            };
-
-
-            if ($("#customerLatitude")) {
-                $("#customerLatitude").value =
-                    latitude;
-            }
-
-            if ($("#customerLongitude")) {
-                $("#customerLongitude").value =
-                    longitude;
-            }
-
-            if ($("#mapLatitude")) {
-                $("#mapLatitude").textContent =
-                    latitude.toFixed(6);
-            }
-
-            if ($("#mapLongitude")) {
-                $("#mapLongitude").textContent =
-                    longitude.toFixed(6);
-            }
-
-            if ($("#locationStatus")) {
-                $("#locationStatus").textContent =
-                    "Location selected successfully 📍";
-            }
-
-
-            showToast(
-                "Location selected 📍"
-            );
-
-        },
-
-        function () {
-
-            showToast(
-                "Location permission denied ❌"
-            );
-
-        },
-
-        {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0
-        }
-
-    );
-
-}
-
-
-$("#locationBtn")?.addEventListener(
-    "click",
-    getLocation
-);
-
-$("#mapLocationBtn")?.addEventListener(
-    "click",
-    getLocation
-);
-
-
-/* ================= CUSTOMER DETAILS ================= */
-
-function getCustomerDetails() {
-
-    return {
-
-        name:
-            $("#customerName")
-                ?.value.trim() || "",
-
-        phone:
-            $("#customerPhone")
-                ?.value.trim() || "",
-
-        address:
-            $("#customerAddress")
-                ?.value.trim() || "",
-
-        landmark:
-            $("#customerLandmark")
-                ?.value.trim() || ""
-
-    };
-
-}
-
-
-/* ================= ORDER ID ================= */
-
-function createOrderID() {
-
-    const time =
-        Date.now()
-            .toString()
-            .slice(-6);
-
-    const random =
-        Math.floor(
-            100 +
-            Math.random() * 900
+    const form =
+        document.getElementById(
+            "addressForm"
         );
 
-    return "RAMA-" +
-        time +
-        "-" +
-        random;
+
+    if (form) {
+
+        form.addEventListener(
+            "submit",
+            placeOrder
+        );
+
+    }
 
 }
 
 
-/* ================= PLACE ORDER ================= */
+/* =====================================================
+   LOCATION
+===================================================== */
 
-function placeOrder() {
+function setupLocation() {
 
-    if (
-        !Array.isArray(cart) ||
-        cart.length === 0
-    ) {
+    const button =
+        document.getElementById(
+            "getLocationBtn"
+        );
+
+
+    const status =
+        document.getElementById(
+            "locationStatus"
+        );
+
+
+    if (!button) return;
+
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            if (!navigator.geolocation) {
+
+                showToast(
+                    "Location is not supported"
+                );
+
+                return;
+
+            }
+
+
+            status.textContent =
+                "Getting location...";
+
+
+            navigator.geolocation.getCurrentPosition(
+
+                position => {
+
+                    const lat =
+                        position.coords.latitude;
+
+                    const lng =
+                        position.coords.longitude;
+
+
+                    document.getElementById(
+                        "customerLatitude"
+                    ).value = lat;
+
+
+                    document.getElementById(
+                        "customerLongitude"
+                    ).value = lng;
+
+
+                    status.textContent =
+                        `Location captured: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+
+
+                    showToast(
+                        "Location captured 📍"
+                    );
+
+                },
+
+                () => {
+
+                    status.textContent =
+                        "Unable to get location";
+
+                    showToast(
+                        "Please allow location permission"
+                    );
+
+                },
+
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   PLACE ORDER
+===================================================== */
+
+function placeOrder(event) {
+
+    event.preventDefault();
+
+
+    if (cart.length === 0) {
 
         showToast(
             "Your cart is empty 🛒"
@@ -852,14 +1088,62 @@ function placeOrder() {
     }
 
 
-    const customer =
-        getCustomerDetails();
+    const name =
+        document
+            .getElementById(
+                "customerName"
+            )
+            .value
+            .trim();
 
 
-    if (!customer.name) {
+    const phone =
+        document
+            .getElementById(
+                "customerPhone"
+            )
+            .value
+            .trim();
+
+
+    const address =
+        document
+            .getElementById(
+                "customerAddress"
+            )
+            .value
+            .trim();
+
+
+    const landmark =
+        document
+            .getElementById(
+                "customerLandmark"
+            )
+            .value
+            .trim();
+
+
+    const latitude =
+        document
+            .getElementById(
+                "customerLatitude"
+            )
+            .value;
+
+
+    const longitude =
+        document
+            .getElementById(
+                "customerLongitude"
+            )
+            .value;
+
+
+    if (!name || !phone || !address) {
 
         showToast(
-            "Please enter your name"
+            "Please fill all required details"
         );
 
         return;
@@ -867,25 +1151,10 @@ function placeOrder() {
     }
 
 
-    if (
-        !/^[0-9]{10}$/.test(
-            customer.phone
-        )
-    ) {
+    if (!/^\d{10}$/.test(phone)) {
 
         showToast(
-            "Please enter valid 10 digit mobile number"
-        );
-
-        return;
-
-    }
-
-
-    if (!customer.address) {
-
-        showToast(
-            "Please enter delivery address"
+            "Enter valid 10 digit mobile number"
         );
 
         return;
@@ -897,189 +1166,279 @@ function placeOrder() {
         calculateTotals();
 
 
+    const orderId =
+        "RM" +
+        Date.now()
+            .toString()
+            .slice(-8);
+
+
+    const date =
+        new Date()
+            .toLocaleString("en-IN");
+
+
     const order = {
 
-        id: createOrderID(),
+        id: orderId,
+
+        date,
 
         customer: {
 
-            name: customer.name,
-            phone: customer.phone,
-            address: customer.address,
-            landmark: customer.landmark
+            name,
+            phone,
+            address,
+            landmark
 
         },
 
-        items: cart.map(
-            function (item) {
+        location: {
 
-                return {
+            latitude,
+            longitude
 
-                    name: item.name,
+        },
 
-                    price:
-                        Number(item.price) || 0,
+        items:
+            cart.map(item => ({
 
-                    quantity:
-                        Number(item.quantity) || 1
+                name: item.name,
 
-                };
+                price: item.price,
 
-            }
-        ),
+                quantity: item.quantity
 
-        subtotal: totals.subtotal,
+            })),
 
-        delivery: totals.delivery,
+        subtotal:
+            totals.subtotal,
 
-        discount: totals.discount,
+        delivery:
+            totals.delivery,
 
-        total: totals.total,
+        discount:
+            totals.discount,
 
-        location: customerLocation,
+        total:
+            totals.total,
 
-        status: "Confirmed",
-
-        createdAt:
-            new Date()
-                .toLocaleString("en-IN")
+        status:
+            "Confirmed"
 
     };
 
+
+    /* SAVE ORDER */
 
     orders.unshift(order);
 
     saveOrders();
 
 
-    /* =========================================
-       IMPORTANT:
-       WhatsApp is NOT opened here.
-       ========================================= */
+    /* CREATE WHATSAPP MESSAGE */
 
+    const message =
+        createWhatsAppMessage(
+            order
+        );
+
+
+    const whatsappURL =
+        `https://wa.me/${SELLER_WHATSAPP}?text=${encodeURIComponent(message)}`;
+
+
+    /*
+       Open WhatsApp BEFORE clearing cart.
+       This ensures all data is already prepared.
+    */
+
+    window.open(
+        whatsappURL,
+        "_blank"
+    );
+
+
+    /* CLEAR CART */
 
     cart = [];
 
-    appliedCoupon = false;
+    appliedDiscount = 0;
 
     saveCart();
 
-
     renderCart();
 
-    updateCartCount();
+    renderOrders();
 
-    updateTotals();
-
-    renderCustomerOrders();
+    renderSellerOrders();
 
 
-    showOrderConfirmation(order);
+    /* RESET FORM */
+
+    document
+        .getElementById(
+            "addressForm"
+        )
+        .reset();
+
+
+    document
+        .getElementById(
+            "customerLatitude"
+        )
+        .value = "";
+
+
+    document
+        .getElementById(
+            "customerLongitude"
+        )
+        .value = "";
+
+
+    document
+        .getElementById(
+            "locationStatus"
+        )
+        .textContent =
+        "Location not captured";
+
+
+    showToast(
+        `Order ${orderId} created successfully 🎉`
+    );
 
 }
 
 
-/* ================= ADDRESS FORM ================= */
+/* =====================================================
+   WHATSAPP MESSAGE
+===================================================== */
 
-$("#addressForm")?.addEventListener(
-    "submit",
-    function (event) {
+function createWhatsAppMessage(order) {
 
-        event.preventDefault();
+    let message =
+        `🥟 *RAMA MOMO'S - NEW ORDER*%0A`;
 
-        placeOrder();
+
+    message +=
+        `%0A🆔 *Order ID:* ${order.id}`;
+
+
+    message +=
+        `%0A📅 *Date:* ${order.date}`;
+
+
+    message +=
+        `%0A%0A👤 *CUSTOMER DETAILS*`;
+
+
+    message +=
+        `%0AName: ${order.customer.name}`;
+
+
+    message +=
+        `%0APhone: ${order.customer.phone}`;
+
+
+    message +=
+        `%0AAddress: ${order.customer.address}`;
+
+
+    if (order.customer.landmark) {
+
+        message +=
+            `%0ALandmark: ${order.customer.landmark}`;
 
     }
-);
 
 
-/* ================= ORDER CONFIRMATION ================= */
-
-function showOrderConfirmation(order) {
-
-    const box =
-        document.createElement("div");
-
-    box.className =
-        "order-modal";
+    message +=
+        `%0A%0A🥟 *ORDER ITEMS*`;
 
 
-    const modal =
-        document.createElement("div");
+    order.items.forEach(
+        item => {
 
-    modal.className =
-        "order-modal-box";
-
-
-    modal.innerHTML =
-
-        '<div class="success-icon">✓</div>' +
-
-        "<h2>Order Confirmed 🎉</h2>" +
-
-        "<p>Your order is confirmed successfully.</p>" +
-
-        "<strong>" +
-        escapeHTML(order.id) +
-        "</strong>" +
-
-        '<div class="order-modal-total">' +
-        "Total: " +
-        money(order.total) +
-        "</div>" +
-
-        '<p class="confirmation-note">' +
-        "Thank you for ordering from RAMA MOMO'S ❤️" +
-        "</p>" +
-
-        '<button ' +
-        'type="button" ' +
-        'class="main-btn close-order-modal">' +
-        "Done" +
-        "</button>";
+            const itemTotal =
+                item.price *
+                item.quantity;
 
 
-    box.appendChild(modal);
+            message +=
+                `%0A• ${item.name} × ${item.quantity} = ₹${itemTotal}`;
 
-    document.body.appendChild(box);
+        }
+    );
 
 
-    modal
-        .querySelector(".close-order-modal")
-        ?.addEventListener(
-            "click",
-            function () {
+    message +=
+        `%0A%0A💰 *PAYMENT DETAILS*`;
 
-                box.remove();
 
-                document
-                    .querySelector("#orders")
-                    ?.scrollIntoView({
-                        behavior: "smooth"
-                    });
+    message +=
+        `%0ASubtotal: ₹${order.subtotal}`;
 
-            }
-        );
+
+    message +=
+        `%0ADelivery: ₹${order.delivery}`;
+
+
+    message +=
+        `%0ADiscount: ₹${order.discount}`;
+
+
+    message +=
+        `%0A*TOTAL: ₹${order.total}*`;
+
+
+    if (
+        order.location.latitude &&
+        order.location.longitude
+    ) {
+
+        const mapURL =
+            `https://www.google.com/maps?q=${order.location.latitude},${order.location.longitude}`;
+
+
+        message +=
+            `%0A%0A📍 *Customer Location:*%0A${mapURL}`;
+
+    }
+
+
+    message +=
+        `%0A%0A🙏 Thank you!`;
+
+
+    return message;
 
 }
 
 
-/* ================= CUSTOMER ORDERS ================= */
+/* =====================================================
+   ORDERS
+===================================================== */
 
-function renderCustomerOrders() {
+function renderOrders() {
 
     const container =
-        $("#customerOrders");
+        document.getElementById(
+            "customerOrders"
+        );
+
 
     if (!container) return;
 
 
     if (orders.length === 0) {
 
-        container.innerHTML =
-            '<div class="no-orders">' +
-            "📦 No orders placed yet." +
-            "</div>";
+        container.innerHTML = `
+            <div class="no-orders">
+                📦 No orders placed yet.
+            </div>
+        `;
 
         return;
 
@@ -1089,89 +1448,431 @@ function renderCustomerOrders() {
     container.innerHTML = "";
 
 
-    orders.forEach(
-        function (order) {
+    orders.forEach(order => {
 
-            const card =
-                document.createElement("div");
-
-            card.className =
-                "order-card";
+        const card =
+            document.createElement(
+                "div"
+            );
 
 
-            let itemsHTML = "";
+        card.className =
+            "order-card";
 
 
-            order.items.forEach(
-                function (item) {
+        const items =
+            order.items
+                .map(item => `
+                    <div class="order-item-row">
+                        <span>
+                            ${escapeHTML(item.name)}
+                            × ${item.quantity}
+                        </span>
 
-                    itemsHTML +=
+                        <strong>
+                            ₹${item.price * item.quantity}
+                        </strong>
+                    </div>
+                `)
+                .join("");
 
-                        '<div class="order-item-row">' +
 
-                        "<span>" +
-                        escapeHTML(item.name) +
-                        " × " +
-                        item.quantity +
-                        "</span>" +
+        card.innerHTML = `
 
-                        "<strong>" +
-                        money(
-                            item.price *
-                            item.quantity
-                        ) +
-                        "</strong>" +
+            <div class="order-card-header">
 
-                        "</div>";
+                <div>
+
+                    <div class="order-id">
+                        ${escapeHTML(order.id)}
+                    </div>
+
+                    <div class="order-date">
+                        ${escapeHTML(order.date)}
+                    </div>
+
+                </div>
+
+                <span class="status-badge
+                    ${order.status.toLowerCase()}">
+
+                    ${escapeHTML(order.status)}
+
+                </span>
+
+            </div>
+
+
+            <div class="order-items">
+
+                ${items}
+
+            </div>
+
+
+            <div class="order-total">
+
+                <span>Total</span>
+
+                <strong>
+                    ₹${order.total}
+                </strong>
+
+            </div>
+
+
+            ${
+                order.status !== "Cancelled" &&
+                order.status !== "Delivered"
+                ? `
+                    <button
+                        class="cancel-order-btn"
+                        data-order-id="${escapeHTML(order.id)}">
+
+                        Cancel Order ❌
+
+                    </button>
+                `
+                : ""
+            }
+
+        `;
+
+
+        container.appendChild(card);
+
+    });
+
+
+    container
+        .querySelectorAll(
+            ".cancel-order-btn"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    cancelOrder(
+                        button.dataset.orderId
+                    );
 
                 }
             );
 
+        });
 
-            card.innerHTML =
-
-                '<div class="order-card-header">' +
-
-                "<div>" +
-
-                '<div class="order-id">' +
-                escapeHTML(order.id) +
-                "</div>" +
-
-                '<div class="order-date">' +
-                escapeHTML(order.createdAt) +
-                "</div>" +
-
-                "</div>" +
-
-                '<span class="status-badge">' +
-                escapeHTML(order.status) +
-                "</span>" +
-
-                "</div>" +
+}
 
 
-                '<div class="order-items">' +
-                itemsHTML +
-                "</div>" +
+/* =====================================================
+   CANCEL ORDER
+===================================================== */
+
+function cancelOrder(orderId) {
+
+    const order =
+        orders.find(
+            item =>
+                item.id === orderId
+        );
 
 
-                '<div class="order-total">' +
-
-                "<span>Total</span>" +
-
-                "<strong>" +
-                money(order.total) +
-                "</strong>" +
-
-                "</div>" +
-
-                "<p>" +
-                escapeHTML(order.customer.address) +
-                "</p>";
+    if (!order) return;
 
 
-            container.appendChild(card);
+    if (
+        order.status === "Cancelled" ||
+        order.status === "Delivered"
+    ) {
+
+        showToast(
+            "This order cannot be cancelled."
+        );
+
+        return;
+
+    }
+
+
+    const yes =
+        confirm(
+            "Are you sure you want to cancel this order?"
+        );
+
+
+    if (!yes) return;
+
+
+    order.status =
+        "Cancelled";
+
+
+    order.cancelledAt =
+        new Date()
+            .toLocaleString("en-IN");
+
+
+    saveOrders();
+
+    renderOrders();
+
+    renderSellerOrders();
+
+    showToast(
+        "Order cancelled ❌"
+    );
+
+}
+
+
+/* =====================================================
+   SELLER PANEL
+===================================================== */
+
+function renderSellerOrders() {
+
+    const container =
+        document.getElementById(
+            "sellerOrders"
+        );
+
+
+    const count =
+        document.getElementById(
+            "sellerOrderCount"
+        );
+
+
+    if (!container) return;
+
+
+    if (count) {
+
+        count.textContent =
+            `${orders.length} Orders`;
+
+    }
+
+
+    if (orders.length === 0) {
+
+        container.innerHTML = `
+            <div class="no-orders">
+                🔔 No orders yet.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    orders.forEach(order => {
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+
+        card.className =
+            "seller-order-card";
+
+
+        if (order.status === "Confirmed") {
+
+            card.classList.add(
+                "new-order"
+            );
+
+        }
+
+
+        const items =
+            order.items
+                .map(item => `
+                    <div class="order-item-row">
+                        <span>
+                            ${escapeHTML(item.name)}
+                            × ${item.quantity}
+                        </span>
+
+                        <strong>
+                            ₹${item.price * item.quantity}
+                        </strong>
+                    </div>
+                `)
+                .join("");
+
+
+        card.innerHTML = `
+
+            <div class="order-card-header">
+
+                <div>
+
+                    <div class="order-id">
+                        ${escapeHTML(order.id)}
+                    </div>
+
+                    <div class="order-date">
+                        ${escapeHTML(order.date)}
+                    </div>
+
+                </div>
+
+                <span class="status-badge
+                    ${order.status.toLowerCase()}">
+
+                    ${escapeHTML(order.status)}
+
+                </span>
+
+            </div>
+
+
+            <div class="seller-customer">
+
+                <p>
+                    <strong>Customer:</strong>
+                    ${escapeHTML(order.customer.name)}
+                </p>
+
+                <p>
+                    <strong>Phone:</strong>
+                    ${escapeHTML(order.customer.phone)}
+                </p>
+
+                <p>
+                    <strong>Address:</strong>
+                    ${escapeHTML(order.customer.address)}
+                </p>
+
+                ${
+                    order.customer.landmark
+                    ? `
+                        <p>
+                            <strong>Landmark:</strong>
+                            ${escapeHTML(
+                                order.customer.landmark
+                            )}
+                        </p>
+                    `
+                    : ""
+                }
+
+            </div>
+
+
+            <div>
+                ${items}
+            </div>
+
+
+            <div class="order-total">
+
+                <span>Total</span>
+
+                <strong>
+                    ₹${order.total}
+                </strong>
+
+            </div>
+
+        `;
+
+
+        container.appendChild(card);
+
+    });
+
+}
+
+
+/* =====================================================
+   REVIEWS
+===================================================== */
+
+function setupReviews() {
+
+    const form =
+        document.getElementById(
+            "reviewForm"
+        );
+
+
+    if (!form) return;
+
+
+    form.addEventListener(
+        "submit",
+        event => {
+
+            event.preventDefault();
+
+
+            const name =
+                document
+                    .getElementById(
+                        "reviewName"
+                    )
+                    .value
+                    .trim();
+
+
+            const rating =
+                document
+                    .getElementById(
+                        "reviewRating"
+                    )
+                    .value;
+
+
+            const text =
+                document
+                    .getElementById(
+                        "reviewText"
+                    )
+                    .value
+                    .trim();
+
+
+            if (!name || !rating || !text)
+                return;
+
+
+            reviews.unshift({
+
+                name,
+
+                rating:
+                    Number(rating),
+
+                text,
+
+                date:
+                    new Date()
+                        .toLocaleDateString(
+                            "en-IN"
+                        )
+
+            });
+
+
+            saveReviews();
+
+            renderReviews();
+
+            form.reset();
+
+            showToast(
+                "Thank you for your review ⭐"
+            );
 
         }
     );
@@ -1179,255 +1880,276 @@ function renderCustomerOrders() {
 }
 
 
-/* ================= REVIEWS ================= */
-
-$$(".review-star").forEach(
-    function (star) {
-
-        star.addEventListener(
-            "click",
-            function () {
-
-                selectedRating =
-                    Number(
-                        star.dataset.rating
-                    );
-
-
-                $$(".review-star")
-                    .forEach(
-                        function (item) {
-
-                            item.classList.toggle(
-                                "active",
-                                Number(
-                                    item.dataset.rating
-                                ) <= selectedRating
-                            );
-
-                        }
-                    );
-
-            }
-        );
-
-    }
-);
-
-
-/* ================= SUBMIT REVIEW ================= */
-
-$("#reviewForm")?.addEventListener(
-    "submit",
-    function (event) {
-
-        event.preventDefault();
-
-
-        const name =
-            $("#reviewName")
-                ?.value.trim() || "";
-
-        const text =
-            $("#reviewText")
-                ?.value.trim() || "";
-
-
-        if (!name) {
-
-            showToast(
-                "Please enter your name"
-            );
-
-            return;
-
-        }
-
-
-        if (!selectedRating) {
-
-            showToast(
-                "Please select stars ⭐"
-            );
-
-            return;
-
-        }
-
-
-        if (!text) {
-
-            showToast(
-                "Please write your review"
-            );
-
-            return;
-
-        }
-
-
-        const review = {
-
-            id:
-                Date.now(),
-
-            name,
-
-            rating:
-                selectedRating,
-
-            text,
-
-            date:
-                new Date()
-                    .toLocaleDateString("en-IN")
-
-        };
-
-
-        reviews.unshift(review);
-
-        saveReviews();
-
-        renderReviews();
-
-
-        $("#reviewForm").reset();
-
-        selectedRating = 0;
-
-
-        $$(".review-star")
-            .forEach(
-                function (star) {
-                    star.classList.remove(
-                        "active"
-                    );
-                }
-            );
-
-
-        showToast(
-            "Thank you for your review ❤️"
-        );
-
-    }
-);
-
-
-/* ================= RENDER REVIEWS ================= */
-
 function renderReviews() {
 
     const container =
-        $("#reviewsList");
+        document.getElementById(
+            "reviewsList"
+        );
+
 
     if (!container) return;
 
 
     if (reviews.length === 0) {
 
-        container.innerHTML =
-            '<div class="no-orders">' +
-            "⭐ No reviews yet. Be the first!" +
-            "</div>";
+        container.innerHTML = `
+            <div class="no-orders">
+                ⭐ Be the first to review RAMA MOMO'S.
+            </div>
+        `;
 
         return;
 
     }
 
 
-    container.innerHTML = "";
+    container.innerHTML =
+        reviews
+            .map(review => {
+
+                const stars =
+                    "★".repeat(
+                        review.rating
+                    ) +
+                    "☆".repeat(
+                        5 -
+                        review.rating
+                    );
 
 
-    reviews.forEach(
-        function (review) {
+                return `
 
-            const card =
-                document.createElement("div");
+                    <div class="review-card">
 
-            card.className =
-                "review-card";
+                        <strong>
+                            ${escapeHTML(
+                                review.name
+                            )}
+                        </strong>
 
+                        <div class="review-rating">
+                            ${stars}
+                        </div>
 
-            const stars =
-                "★".repeat(
-                    Number(review.rating)
-                ) +
-                "☆".repeat(
-                    5 -
-                    Number(review.rating)
-                );
+                        <p>
+                            ${escapeHTML(
+                                review.text
+                            )}
+                        </p>
 
+                    </div>
 
-            card.innerHTML =
+                `;
 
-                "<h4>" +
-                escapeHTML(review.name) +
-                "</h4>" +
+            })
+            .join("");
 
-                '<div class="review-stars">' +
-                stars +
-                "</div>" +
-
-                "<p>" +
-                escapeHTML(review.text) +
-                "</p>" +
-
-                "<small>" +
-                escapeHTML(review.date) +
-                "</small>";
+}
 
 
-            container.appendChild(card);
+/* =====================================================
+   3D MOMO EFFECT
+===================================================== */
+
+function setup3DMomo() {
+
+    const area =
+        document.getElementById(
+            "momo3d"
+        );
+
+
+    const momo =
+        document.getElementById(
+            "momoObject"
+        );
+
+
+    if (!area || !momo)
+        return;
+
+
+    let targetX = 0;
+
+    let targetY = 0;
+
+    let currentX = 0;
+
+    let currentY = 0;
+
+    let targetScale = 1;
+
+    let currentScale = 1;
+
+
+    function updateTarget(
+        clientX,
+        clientY
+    ) {
+
+        const rect =
+            area.getBoundingClientRect();
+
+
+        const x =
+            clientX -
+            rect.left;
+
+
+        const y =
+            clientY -
+            rect.top;
+
+
+        const centerX =
+            rect.width / 2;
+
+
+        const centerY =
+            rect.height / 2;
+
+
+        targetY =
+            ((x - centerX) /
+                centerX) * 13;
+
+
+        targetX =
+            ((y - centerY) /
+                centerY) * -10;
+
+
+        targetScale = 1.045;
+
+    }
+
+
+    area.addEventListener(
+        "mousemove",
+        event => {
+
+            updateTarget(
+                event.clientX,
+                event.clientY
+            );
 
         }
     );
 
-}
 
+    area.addEventListener(
+        "mouseleave",
+        () => {
 
-/* ================= TOAST ================= */
+            targetX = 0;
 
-function showToast(message) {
+            targetY = 0;
 
-    const container =
-        $("#toast-container");
+            targetScale = 1;
 
-    if (!container) return;
-
-
-    const toast =
-        document.createElement("div");
-
-    toast.className =
-        "toast";
-
-    toast.textContent =
-        message;
-
-
-    container.appendChild(toast);
-
-
-    setTimeout(
-        function () {
-            toast.remove();
-        },
-        3000
+        }
     );
 
+
+    area.addEventListener(
+        "touchmove",
+        event => {
+
+            if (!event.touches.length)
+                return;
+
+
+            const touch =
+                event.touches[0];
+
+
+            updateTarget(
+                touch.clientX,
+                touch.clientY
+            );
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    area.addEventListener(
+        "touchend",
+        () => {
+
+            targetX = 0;
+
+            targetY = 0;
+
+            targetScale = 1;
+
+        }
+    );
+
+
+    function animate() {
+
+        currentX +=
+            (targetX - currentX) *
+            .08;
+
+
+        currentY +=
+            (targetY - currentY) *
+            .08;
+
+
+        currentScale +=
+            (targetScale - currentScale) *
+            .08;
+
+
+        momo.style.transform = `
+
+            translateY(0)
+
+            rotateX(${currentX}deg)
+
+            rotateY(${currentY}deg)
+
+            scale(${currentScale})
+
+        `;
+
+
+        requestAnimationFrame(
+            animate
+        );
+
+    }
+
+
+    animate();
+
 }
 
 
-/* ================= START ================= */
+/* =====================================================
+   KEYBOARD SAFETY
+===================================================== */
 
-renderCart();
+document.addEventListener(
+    "keydown",
+    event => {
 
-updateCartCount();
+        if (
+            event.key === "Enter" &&
+            event.target.matches(
+                ".qty-input"
+            )
+        ) {
 
-updateTotals();
+            event.preventDefault();
 
-renderCustomerOrders();
+        }
 
-renderReviews();
+    }
+);
